@@ -1,29 +1,67 @@
 ﻿using HtmlAgilityPack;
+using System.Web;
 
 namespace CarCrawler.Services.Scrapers;
 
 internal class AdListLinksScraperService
 {
-    private const string AdXPath = "//main/article/div/h2/a";
     private Uri _adListLink;
+    private byte _currentPage = 1;
+    private Uri AdListLinkWithPage 
+    {
+        get 
+        {
+            // Set page query param
+            var queryParams = HttpUtility.ParseQueryString(_adListLink.Query);
+            queryParams.Set("page", _currentPage.ToString());
+
+            // Build uri
+            var uriEndpointString = _adListLink.GetLeftPart(UriPartial.Path);
+            var queryParamsString = queryParams.ToString();
+            var newUriString = $"{uriEndpointString}?{queryParamsString}";
+
+            return new Uri(newUriString);
+        }
+    }
 
     internal AdListLinksScraperService(Uri adListLink)
     {
         this._adListLink = adListLink;
     }
 
-    internal IEnumerable<Uri> Call()
-    {
-        var htmlNodes = GetHtmlNodes();
-
-        return GetLinksFromHtmlNodes(htmlNodes);
-    }
-
-    private IEnumerable<HtmlNode> GetHtmlNodes()
+    internal IEnumerable<Uri> GetLinksFromSinglePage()
     {
         var htmlDocNode = LoadHtmlDocNode();
 
-        return htmlDocNode.SelectNodes(AdXPath);
+        SetNextPageFromHtmlDocNode(htmlDocNode);
+        var htmlNodes = GetHtmlNodesFromHtmlDocNode(htmlDocNode);
+
+        return GetLinksFromHtmlNodes(htmlNodes);
+    }
+    internal IEnumerable<IEnumerable<Uri>> GetLinksFromPages()
+    {
+        while (_currentPage > 0)
+        {
+            yield return GetLinksFromSinglePage();
+        }
+    }
+
+    private static IEnumerable<HtmlNode> GetHtmlNodesFromHtmlDocNode(HtmlNode htmlDocNode) 
+    {
+        var adXPath = @"//main/article/div/h2/a";
+
+        return htmlDocNode.SelectNodes(adXPath);
+    }
+    private void SetNextPageFromHtmlDocNode (HtmlNode htmlDocNode)
+    {
+        var paginationListNodeXPath = @"//ul[contains(@class, ""pagination-list"")]";
+        var activePageNodeXPath = $@"{paginationListNodeXPath}/li[contains(@class, ""pagination-item__active"")]";
+        var nextPageNodeXPath = $@"{activePageNodeXPath}/following-sibling::li[contains(@class, ""pagination-item"")]";
+
+        var nextPageNode = htmlDocNode.SelectSingleNode(nextPageNodeXPath);
+        var nextPageString = nextPageNode?.InnerText?.Trim();
+
+        _ = byte.TryParse(nextPageString, out _currentPage);
     }
 
     private IEnumerable<Uri> GetLinksFromHtmlNodes(IEnumerable<HtmlNode> htmlNodes)
@@ -44,7 +82,7 @@ internal class AdListLinksScraperService
     private HtmlNode LoadHtmlDocNode()
     {
         var web = new HtmlWeb();
-        var doc = web.Load(_adListLink);
+        var doc = web.Load(AdListLinkWithPage);
         var node = doc.DocumentNode;
 
         return node;

@@ -63,6 +63,11 @@ internal class AdDetailsScraperService
     {
         var sellerPhonesNodesXPath = @"//span[contains(@class, ""seller-phones__number"")]";
         var sellerPhonesNodes = htmlDocNode.SelectNodes(sellerPhonesNodesXPath);
+        if (sellerPhonesNodes == null)
+        {
+            return;
+        }
+
         var sellerPhones = sellerPhonesNodes.Select(node => node.InnerText?.Trim());
         sellerPhones = sellerPhones.Where(phoneString => 
         {
