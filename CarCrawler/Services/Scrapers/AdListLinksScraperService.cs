@@ -5,8 +5,9 @@ namespace CarCrawler.Services.Scrapers;
 
 internal class AdListLinksScraperService
 {
-    private Uri _adListLink;
+    private readonly Uri _adListLink;
     private byte _currentPage = 1;
+    private HtmlNode _htmlDocNode;
     private Uri AdListLinkWithPage 
     {
         get 
@@ -26,15 +27,13 @@ internal class AdListLinksScraperService
 
     internal AdListLinksScraperService(Uri adListLink)
     {
-        this._adListLink = adListLink;
+        _adListLink = adListLink;
+        _htmlDocNode = GetHtmlDocNodeForCurrentPage();
     }
 
     internal IEnumerable<Uri> GetLinksFromSinglePage()
     {
-        var htmlDocNode = LoadHtmlDocNode();
-
-        SetNextPageFromHtmlDocNode(htmlDocNode);
-        var htmlNodes = GetHtmlNodesFromHtmlDocNode(htmlDocNode);
+        var htmlNodes = GetHtmlNodes();
 
         return GetLinksFromHtmlNodes(htmlNodes);
     }
@@ -43,25 +42,30 @@ internal class AdListLinksScraperService
         while (_currentPage > 0)
         {
             yield return GetLinksFromSinglePage();
+
+            _currentPage = GetNextPage();
+            _htmlDocNode = GetHtmlDocNodeForCurrentPage();
         }
     }
 
-    private static IEnumerable<HtmlNode> GetHtmlNodesFromHtmlDocNode(HtmlNode htmlDocNode) 
+    private IEnumerable<HtmlNode> GetHtmlNodes() 
     {
         var adXPath = @"//main/article/div/h2/a";
 
-        return htmlDocNode.SelectNodes(adXPath);
+        return _htmlDocNode.SelectNodes(adXPath);
     }
-    private void SetNextPageFromHtmlDocNode (HtmlNode htmlDocNode)
+    private byte GetNextPage ()
     {
         var paginationListNodeXPath = @"//ul[contains(@class, ""pagination-list"")]";
         var activePageNodeXPath = $@"{paginationListNodeXPath}/li[contains(@class, ""pagination-item__active"")]";
         var nextPageNodeXPath = $@"{activePageNodeXPath}/following-sibling::li[contains(@class, ""pagination-item"")]";
 
-        var nextPageNode = htmlDocNode.SelectSingleNode(nextPageNodeXPath);
+        var nextPageNode = _htmlDocNode.SelectSingleNode(nextPageNodeXPath);
         var nextPageString = nextPageNode?.InnerText?.Trim();
 
-        _ = byte.TryParse(nextPageString, out _currentPage);
+        _ = byte.TryParse(nextPageString, out byte currentPage);
+
+        return currentPage;
     }
 
     private IEnumerable<Uri> GetLinksFromHtmlNodes(IEnumerable<HtmlNode> htmlNodes)
@@ -79,12 +83,11 @@ internal class AdListLinksScraperService
 
         return uri;
     }
-    private HtmlNode LoadHtmlDocNode()
+    private HtmlNode GetHtmlDocNodeForCurrentPage()
     {
         var web = new HtmlWeb();
         var doc = web.Load(AdListLinkWithPage);
-        var node = doc.DocumentNode;
 
-        return node;
+        return doc.DocumentNode;
     }
 }
