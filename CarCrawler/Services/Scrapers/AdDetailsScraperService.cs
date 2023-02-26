@@ -1,5 +1,4 @@
-﻿using CarCrawler.Models;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using ISO._4217;
 using System.Globalization;
 using System.Text.RegularExpressions;
