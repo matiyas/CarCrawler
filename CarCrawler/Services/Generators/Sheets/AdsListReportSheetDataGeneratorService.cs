@@ -1,4 +1,5 @@
 ﻿using CarCrawler.Services.Scrapers;
+using System.Linq;
 
 namespace CarCrawler.Services.Generators.Sheets;
 
@@ -15,8 +16,14 @@ internal class AdsListReportSheetDataGeneratorService
     {
         var adDetailsList = GetAdDetails();
         var spreadsheetRows = adDetailsList.Select(adDetails => adDetails.ToGoogleSpreadsheetRow());
+        var spreadsheetRowsList = new List<IList<object>>
+        {
+            AdDetails.SpreadsheetColumns
+        };
 
-        return spreadsheetRows.ToList();
+        spreadsheetRowsList.AddRange(spreadsheetRows);
+
+        return spreadsheetRowsList;
     }
 
     private IEnumerable<AdDetails> GetAdDetails ()

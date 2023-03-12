@@ -16,13 +16,14 @@ using (var streamReader =  new StreamReader("assets/ascii/logo.txt"))
 
 var uri = new Uri(uriString);
 var generator = new AdsListReportSheetDataGeneratorService(uri);
-var spreadsheetData = generator.Execute();
+var spreadsheetData = generator.Execute().DistinctBy(list => list[0]).ToList();
 var spreadsheetBody = new ValueRange() { Values = spreadsheetData };
 var googleSheetHelper = new GoogleSheetHelper();
 var service = googleSheetHelper.Service;
 var spreadsheetsValues = service.Spreadsheets.Values;
 var request = spreadsheetsValues.Update(spreadsheetBody, SpreadsheetId, Range);
 request.ValueInputOption = UpdateRequest.ValueInputOptionEnum.USERENTERED;
+request.IncludeValuesInResponse = true;
 
 var response = request.Execute();
 Console.WriteLine(response);

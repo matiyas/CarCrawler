@@ -4,7 +4,7 @@ namespace CarCrawler.Models;
 
 internal class AdDetails
 {
-    public readonly string[] SpreadsheetColumns = new[]
+    public static readonly string[] SpreadsheetColumns = new[]
     {
         "Id",
         "Brand",

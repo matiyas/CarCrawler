@@ -46,6 +46,8 @@ internal class AdListLinksScraperService
     {
         do
         {
+            Console.WriteLine($"---------- Processing page {_currentPage}...");
+
             _htmlDocNode = GetHtmlDocNodeForCurrentPage();
             yield return GetLinksFromSinglePage();
 
@@ -91,22 +93,38 @@ internal class AdListLinksScraperService
     }
     private HtmlNode GetHtmlDocNodeForCurrentPage()
     {
-        // TODO: Use logger or something like that
-        Console.WriteLine($"---------- Processing page {_currentPage}...");
-
-        var options = new FirefoxOptions();
-        options.AddArgument("--headless");
-
-        var driver = new FirefoxDriver(options) { Url = AdListLinkWithPage.ToString() };
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(120);
-
-        var webElement = driver.FindElement(By.XPath(@"//main/.."));
-        var innerHtml = webElement.GetAttribute("outerHTML");
         var htmlDoc = new HtmlDocument();
-        htmlDoc.LoadHtml(innerHtml);
-        // TODO: Refactor this
-        driver.Close();
+
+        ExecuteActionWithWebDriver(driver =>
+        {
+            var webElement = driver.FindElement(By.XPath(@"//main/.."));
+            var innerHtml = webElement.GetAttribute("outerHTML");
+
+            htmlDoc.LoadHtml(innerHtml);
+        });
 
         return htmlDoc.DocumentNode;
+    }
+    private void ExecuteActionWithWebDriver(Action <WebDriver> action)
+    {
+        WebDriver? driver = default;
+
+        try
+        {
+            var options = new FirefoxOptions();
+            options.AddArgument("--headless");
+
+            driver = new FirefoxDriver(options) { Url = AdListLinkWithPage.ToString() };
+            var ImplicitWait = driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(120);
+            action(driver);
+        } 
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        } 
+        finally
+        {
+            driver?.Close();
+        }
     }
 }
