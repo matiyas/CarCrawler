@@ -1,6 +1,6 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
+﻿using CarCrawler.Drivers;
+using CarCrawler.Services.Downloaders;
+using HtmlAgilityPack;
 using System.Web;
 
 namespace CarCrawler.Services.Scrapers;
@@ -93,38 +93,12 @@ internal class AdListLinksScraperService
     }
     private HtmlNode GetHtmlDocNodeForCurrentPage()
     {
-        var htmlDoc = new HtmlDocument();
+        var webDriver = new SeleniumWebBrowserDriver("firefox");
+        var webPageDownloader = new WebBrowserPageDownloader(webDriver);
+        var webContent = webPageDownloader.DownloadPageContent(AdListLinkWithPage, @"//main/..");
+        var htmlDocument = new HtmlDocument();
+        htmlDocument.LoadHtml(webContent);
 
-        ExecuteActionWithWebDriver(driver =>
-        {
-            var webElement = driver.FindElement(By.XPath(@"//main/.."));
-            var innerHtml = webElement.GetAttribute("outerHTML");
-
-            htmlDoc.LoadHtml(innerHtml);
-        });
-
-        return htmlDoc.DocumentNode;
-    }
-    private void ExecuteActionWithWebDriver(Action <WebDriver> action)
-    {
-        WebDriver? driver = default;
-
-        try
-        {
-            var options = new FirefoxOptions();
-            options.AddArgument("--headless");
-
-            driver = new FirefoxDriver(options) { Url = AdListLinkWithPage.ToString() };
-            var ImplicitWait = driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(120);
-            action(driver);
-        } 
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        } 
-        finally
-        {
-            driver?.Close();
-        }
+        return htmlDocument.DocumentNode;
     }
 }

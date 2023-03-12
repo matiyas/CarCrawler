@@ -1,5 +1,4 @@
 ﻿using CarCrawler.Services.Scrapers;
-using System.Linq;
 
 namespace CarCrawler.Services.Generators.Sheets;
 
