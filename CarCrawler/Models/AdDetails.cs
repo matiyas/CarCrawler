@@ -4,6 +4,26 @@ namespace CarCrawler.Models;
 
 internal class AdDetails
 {
+    public readonly string[] SpreadsheetColumns = new[]
+    {
+        "Id",
+        "Brand",
+        "Description",
+        "FuelType",
+        "ISOCurrencySymbol",
+        "MileageKilometers",
+        "Model",
+        "Name",
+        "Price",
+        "RegistrationDate",
+        "RegistrationNumber",
+        "SellerCoordinates",
+        "SellerPhones",
+        "Url",
+        "VIN",
+        "Year"
+    };
+
     public enum Fuel
     {
         Petrol = 0,
@@ -32,4 +52,25 @@ internal class AdDetails
     public Uri? Url { get; set; }
     public string? VIN { get; set; }
     public string? Year { get; set; }
+
+    public IList<object> ToGoogleSpreadsheetRow ()
+    {
+        var type = GetType()!;
+        var row = SpreadsheetColumns.Select(column => 
+        {
+            var property = type.GetProperty(column)!;
+            var value = property.GetValue(this, null)!;
+            var formattedValue = value switch
+            {
+                null => "",
+                Vector2 vector => $"{vector.X};{vector.Y}",
+                IEnumerable<string> enumerable => string.Join(", ", enumerable),
+                _ => value.ToString()
+            };
+            
+            return (object)formattedValue!;
+        });
+
+        return row.ToList();
+    }
 }

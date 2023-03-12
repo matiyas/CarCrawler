@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,9 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="config\**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="config\google\client_secrets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.60.0.2979" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="ISO.4217.CurrencyCodes" Version="1.0.10" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.8.1" />
   </ItemGroup>
 
 </Project>

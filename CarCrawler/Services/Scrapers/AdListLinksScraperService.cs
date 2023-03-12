@@ -1,4 +1,6 @@
 ﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
 using System.Web;
 
 namespace CarCrawler.Services.Scrapers;
@@ -7,7 +9,7 @@ internal class AdListLinksScraperService
 {
     private readonly Uri _adListLink;
     private byte _currentPage = 1;
-    private HtmlNode _htmlDocNode;
+    private HtmlNode? _htmlDocNode;
     private Uri AdListLinkWithPage 
     {
         get 
@@ -28,31 +30,35 @@ internal class AdListLinksScraperService
     internal AdListLinksScraperService(Uri adListLink)
     {
         _adListLink = adListLink;
-        _htmlDocNode = GetHtmlDocNodeForCurrentPage();
     }
 
     internal IEnumerable<Uri> GetLinksFromSinglePage()
     {
         var htmlNodes = GetHtmlNodes();
+        if (htmlNodes == null)
+        {
+            return Enumerable.Empty<Uri>();
+        }
 
         return GetLinksFromHtmlNodes(htmlNodes);
     }
     internal IEnumerable<IEnumerable<Uri>> GetLinksFromPages()
     {
-        while (_currentPage > 0)
+        do
         {
+            _htmlDocNode = GetHtmlDocNodeForCurrentPage();
             yield return GetLinksFromSinglePage();
 
             _currentPage = GetNextPage();
-            _htmlDocNode = GetHtmlDocNodeForCurrentPage();
-        }
+
+        } while (_currentPage > 0);
     }
 
     private IEnumerable<HtmlNode> GetHtmlNodes() 
     {
-        var adXPath = @"//main/article/div/h2/a";
+        var adXPath = @"//article//a";
 
-        return _htmlDocNode.SelectNodes(adXPath);
+        return _htmlDocNode!.SelectNodes(adXPath);
     }
     private byte GetNextPage ()
     {
@@ -60,7 +66,7 @@ internal class AdListLinksScraperService
         var activePageNodeXPath = $@"{paginationListNodeXPath}/li[contains(@class, ""pagination-item__active"")]";
         var nextPageNodeXPath = $@"{activePageNodeXPath}/following-sibling::li[contains(@class, ""pagination-item"")]";
 
-        var nextPageNode = _htmlDocNode.SelectSingleNode(nextPageNodeXPath);
+        var nextPageNode = _htmlDocNode!.SelectSingleNode(nextPageNodeXPath);
         var nextPageString = nextPageNode?.InnerText?.Trim();
 
         _ = byte.TryParse(nextPageString, out byte currentPage);
@@ -85,9 +91,22 @@ internal class AdListLinksScraperService
     }
     private HtmlNode GetHtmlDocNodeForCurrentPage()
     {
-        var web = new HtmlWeb();
-        var doc = web.Load(AdListLinkWithPage);
+        // TODO: Use logger or something like that
+        Console.WriteLine($"---------- Processing page {_currentPage}...");
 
-        return doc.DocumentNode;
+        var options = new FirefoxOptions();
+        options.AddArgument("--headless");
+
+        var driver = new FirefoxDriver(options) { Url = AdListLinkWithPage.ToString() };
+        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(120);
+
+        var webElement = driver.FindElement(By.XPath(@"//main/.."));
+        var innerHtml = webElement.GetAttribute("outerHTML");
+        var htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(innerHtml);
+        // TODO: Refactor this
+        driver.Close();
+
+        return htmlDoc.DocumentNode;
     }
 }

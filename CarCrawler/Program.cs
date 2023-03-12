@@ -1,9 +1,29 @@
 ﻿global using CarCrawler.Models;
-using CarCrawler.Services.Generators.CSV;
+using CarCrawler.Services.Generators.Sheets;
+using CarCrawler.Services.Helpers.Google.Sheets;
+using Google.Apis.Sheets.v4.Data;
+using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
 
-//var adListLinksScraperService = new AdListLinksScraperService(new Uri(@"https://www.otomoto.pl/osobowe/honda/civic"));
+// TODO: Handle arguments better
+var uriString = args[0];
+var SpreadsheetId = args[1];
+var Range = args[2];
 
-var uri = new Uri($@"https://www.otomoto.pl/osobowe/bmw/seria-3?search%5Bfilter_enum_generation%5D=gen-e36-1990-1999");
-var generator = new AdsListReportCsvGeneratorService(uri);
+using (var streamReader =  new StreamReader("assets/ascii/logo.txt"))
+{
+    Console.WriteLine(streamReader.ReadToEnd());
+}
 
-generator.Call();
+var uri = new Uri(uriString);
+var generator = new AdsListReportSheetDataGeneratorService(uri);
+var spreadsheetData = generator.Execute();
+var spreadsheetBody = new ValueRange() { Values = spreadsheetData };
+var googleSheetHelper = new GoogleSheetHelper();
+var service = googleSheetHelper.Service;
+var spreadsheetsValues = service.Spreadsheets.Values;
+var request = spreadsheetsValues.Update(spreadsheetBody, SpreadsheetId, Range);
+request.ValueInputOption = UpdateRequest.ValueInputOptionEnum.USERENTERED;
+
+var response = request.Execute();
+Console.WriteLine(response);
+Console.WriteLine("---------- Finished");
