@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using ISO._4217;
 using System.Globalization;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using static CarCrawler.Models.AdDetails;
 
@@ -23,10 +24,11 @@ internal class AdDetailsScraperService
         var descriptionNodeXPath = $@"//main//div[contains(@class, ""offer-description__description"")]";
         var parametersNodeXPath = $@"//main//div[contains(@class, ""parametersArea"")]//li[contains(@class, ""offer-params__item"")]";
         var summaryNodeXPath = @"//main//div[contains(@class, ""offer-summary"")]";
-        var priceNodeXPath = $@"{summaryNodeXPath}//div[contains(@class, ""price-wrapper"")]//div[contains(@class, ""offer-price"")]";
+        var priceNodeXPath = $@"{summaryNodeXPath}//div[contains(@class, ""offer-price"")]";
         #endregion
 
         #region Nodes
+        var offerId = GetOfferIdFromUrl();
         var htmlDocNode = LoadHtmlDocNode();
         var summaryNode = htmlDocNode.SelectSingleNode(summaryNodeXPath);
         var priceNode = htmlDocNode.SelectSingleNode(priceNodeXPath);
@@ -43,10 +45,52 @@ internal class AdDetailsScraperService
         GetDetailsFromDescriptionNode(descriptionNode);
         GetVinFromHtmlDocNode(htmlDocNode);
         GetSellerCoordinatesFromHtmlDocNode(htmlDocNode);
-        GetSellerPhonesFromHtmlDocNode(htmlDocNode);
+        GetSellerPhonesFromOfferId(offerId);
         #endregion
 
         return _adDetails;
+    }
+
+    // TODO: Wydzielić do oddzielnej klasy
+    private void GetSellerPhonesFromOfferId(string? offerId)
+    {
+        if (offerId == null)
+        {
+            return;
+        }
+
+        using var client = new HttpClient();
+        try
+        {
+            var requestUri = @$"https://www.otomoto.pl/ajax/misc/contact/all_phones/{offerId}/"!;
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("User-Agent", "Mozilla/5.0");
+
+            var response = client.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                HandleRequestError(response.ReasonPhrase);
+                return;
+            }
+
+            var responseBody = response.Content.ReadAsStringAsync().Result;
+            var jsonDocument = JsonDocument.Parse(responseBody);
+            var data = jsonDocument.RootElement;
+
+            _adDetails.SellerPhones = data.EnumerateArray().Select(e => e.GetProperty("number").ToString());
+            Console.WriteLine(_adDetails.SellerPhones);
+
+        }
+        catch (HttpRequestException ex)
+        {
+            HandleRequestError(ex.Message);
+        }
+    }
+    private static void HandleRequestError (string? message)
+    {
+        Console.WriteLine("An unexpected error occurred:");
+        Console.WriteLine(message ?? "unknown error");
     }
 
     private void GetIdFromHtmlDocNode(HtmlNode htmlDocNode)
@@ -56,24 +100,6 @@ internal class AdDetailsScraperService
         var id = adIdNode?.InnerText?.Trim();
 
         _adDetails.Id = id;
-    }
-
-    private void GetSellerPhonesFromHtmlDocNode(HtmlNode htmlDocNode)
-    {
-        var sellerPhonesNodesXPath = @"//span[contains(@class, ""seller-phones__number"")]";
-        var sellerPhonesNodes = htmlDocNode.SelectNodes(sellerPhonesNodesXPath);
-        if (sellerPhonesNodes == null)
-        {
-            return;
-        }
-
-        var sellerPhones = sellerPhonesNodes.Select(node => node.InnerText?.Trim());
-        sellerPhones = sellerPhones.Where(phoneString => 
-        {
-            return !string.IsNullOrWhiteSpace(phoneString) && Regex.IsMatch(phoneString, @"(\d.*){9,}");
-        });
-
-        _adDetails.SellerPhones = sellerPhones.Select(phone => phone!);
     }
 
     private void GetSellerCoordinatesFromHtmlDocNode(HtmlNode htmlDocNode)
@@ -241,6 +267,19 @@ internal class AdDetailsScraperService
         {
             _adDetails.VIN = vinMatch.Result("$1");
         }
+    }
+
+    // TODO: Wydzielić do oddzielnej klasy
+    // TODO: Wywoływać asynchronicznie
+    private string? GetOfferIdFromUrl()
+    {
+        var idMatch = Regex.Match(_adLink.ToString(), @"-ID(?<id>\w+)\.html");
+        if (!idMatch.Success)
+        {
+            return null;
+        }
+
+        return idMatch.Groups["id"].ToString();
     }
     private HtmlNode LoadHtmlDocNode()
     {

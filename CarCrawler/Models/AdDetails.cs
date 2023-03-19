@@ -53,6 +53,7 @@ internal class AdDetails
     public string? VIN { get; set; }
     public string? Year { get; set; }
 
+    // Wydzielić do oddzielnej klasy
     public IList<object> ToGoogleSpreadsheetRow ()
     {
         var type = GetType()!;
@@ -64,7 +65,7 @@ internal class AdDetails
             {
                 null => "",
                 Vector2 vector => $"{vector.X};{vector.Y}",
-                IEnumerable<string> enumerable => string.Join(", ", enumerable),
+                IEnumerable<string> enumerable => string.Join(";", enumerable),
                 _ => value.ToString()
             };
             

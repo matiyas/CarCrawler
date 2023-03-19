@@ -40,6 +40,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
         finally
         {
             _driver.Close();
+            _driver.Quit();
         }
     }
     private void InitializeBrowserDriverWithOptions(string browser)
