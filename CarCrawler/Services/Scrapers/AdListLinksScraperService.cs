@@ -10,9 +10,9 @@ internal class AdListLinksScraperService
     private readonly Uri _adListLink;
     private byte _currentPage = 1;
     private HtmlNode? _htmlDocNode;
-    private Uri AdListLinkWithPage 
+    private Uri AdListLinkWithPage
     {
-        get 
+        get
         {
             // Set page query param
             var queryParams = HttpUtility.ParseQueryString(_adListLink.Query);
@@ -56,7 +56,7 @@ internal class AdListLinksScraperService
         } while (_currentPage > 0);
     }
 
-    private IEnumerable<HtmlNode> GetHtmlNodes() 
+    private IEnumerable<HtmlNode> GetHtmlNodes()
     {
         var adXPath = @"//article//a";
 
@@ -93,7 +93,7 @@ internal class AdListLinksScraperService
     }
     private HtmlNode GetHtmlDocNodeForCurrentPage()
     {
-        var webDriver = new SeleniumWebBrowserDriver("firefox");
+        var webDriver = new SeleniumWebBrowserDriver("chrome");
         var webPageDownloader = new WebBrowserPageDownloader(webDriver);
         var webContent = webPageDownloader.DownloadPageContent(AdListLinkWithPage, @"//main/..");
         var htmlDocument = new HtmlDocument();

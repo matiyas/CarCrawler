@@ -1,0 +1,28 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/CarCrawler/bin/Debug/net6.0/CarCrawler.dll",
+      "args": [
+        "https://www.otomoto.pl/osobowe/honda/civic/seg-city-car--seg-compact/od-2014?search[filter_enum_generation]=gen-ix-2011&search[filter_enum_fuel_type][0]=petrol&search[filter_enum_fuel_type][1]=petrol-lpg&search[filter_enum_gearbox]=manual&search[filter_float_mileage:to]=150000&search[filter_float_price:to]=60000&search[order]=score:desc&search_id=0&search_atlas_id=@16783573527168&search[advanced_search_expanded]=true0",
+        "1fS5s7LPv-j9vIYltQPO5W4rhIbZYHZI_aSDAdW_Yn7A",
+        "Arkusz1"
+      ],
+      "cwd": "${workspaceFolder}/CarCrawler",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
+}

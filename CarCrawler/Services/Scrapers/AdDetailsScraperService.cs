@@ -79,8 +79,6 @@ internal class AdDetailsScraperService
             var data = jsonDocument.RootElement;
 
             _adDetails.SellerPhones = data.EnumerateArray().Select(e => e.GetProperty("number").ToString());
-            Console.WriteLine(_adDetails.SellerPhones);
-
         }
         catch (HttpRequestException ex)
         {
