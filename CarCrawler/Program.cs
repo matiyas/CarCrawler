@@ -1,15 +1,26 @@
 ﻿global using CarCrawler.Models;
+using CarCrawler.Services.Calculators;
+using CarCrawler.Services.Calculators.Providers;
 using CarCrawler.Services.Generators.Sheets;
 using CarCrawler.Services.Helpers.Google.Sheets;
 using Google.Apis.Sheets.v4.Data;
+using System.Globalization;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
+
+CultureInfo culture = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 // TODO: Handle arguments better
 var uriString = args[0];
 var SpreadsheetId = args[1];
 var Range = args[2];
 
-using (var streamReader =  new StreamReader("assets/ascii/logo.txt"))
+//var cp = new GoogleDistanceMatrixProvider();
+//var c = new DistanceMatrixCalculator(cp);
+//var dm = c.Calculate(new System.Numerics.Vector2(52.9972725f, 18.6621747f), new System.Numerics.Vector2(51.51163f, 21.12249f));
+//Console.WriteLine(dm);
+using (var streamReader = new StreamReader("assets/ascii/logo.txt"))
 {
     Console.WriteLine(streamReader.ReadToEnd());
 }

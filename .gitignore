@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 CarCrawler/config/google/sheets/client_secrets.json
+CarCrawler/config/google/maps/client_secrets.json

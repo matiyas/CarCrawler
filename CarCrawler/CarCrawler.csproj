@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <None Remove="config\google\client_secrets.json" />
+    <None Remove="config\google\maps\client_secrets.json" />
   </ItemGroup>
 
   <ItemGroup>
