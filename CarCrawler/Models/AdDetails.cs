@@ -21,7 +21,9 @@ internal class AdDetails
         "SellerPhones",
         "Url",
         "VIN",
-        "Year"
+        "Year",
+        "TravelDuration",
+        "TravelDistance"
     };
 
     public enum Fuel
@@ -52,6 +54,8 @@ internal class AdDetails
     public Uri? Url { get; set; }
     public string? VIN { get; set; }
     public string? Year { get; set; }
+    public TimeSpan? TravelDuration { get; set; }
+    public int? TravelDistance { get; set; }
 
     // Wydzielić do oddzielnej klasy
     public IList<object> ToGoogleSpreadsheetRow ()
@@ -66,6 +70,7 @@ internal class AdDetails
                 null => "",
                 Vector2 vector => $"{vector.X};{vector.Y}",
                 IEnumerable<string> enumerable => string.Join(";", enumerable),
+                int distanceMeters when column == "TravelDistance" => (distanceMeters / 1000).ToString(),
                 _ => value.ToString()
             };
             

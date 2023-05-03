@@ -144,9 +144,11 @@ internal class AdDetailsScraperService
 
     private static decimal? GetAdPriceFromAdPriceNode(HtmlNode priceNode)
     {
-        var priceString = priceNode.GetAttributeValue("data-price", null)?.Trim();
+        var priceString = priceNode.GetAttributeValue("data-price", "");
+        priceString = Regex.Replace(priceString, @"\s+", "");
 
-        if (string.IsNullOrWhiteSpace(priceString) || !decimal.TryParse(priceString, out decimal price))
+
+        if (string.IsNullOrWhiteSpace(priceString) || !decimal.TryParse(priceString, out var price))
         {
             return null;
         }

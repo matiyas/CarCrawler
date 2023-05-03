@@ -1,10 +1,7 @@
-﻿using CarCrawler.Models;
-using CarCrawler.Services.Builders;
+﻿using CarCrawler.Services.Builders;
 using CarCrawler.Services.Calculators.Providers.Interfaces;
 using Newtonsoft.Json.Linq;
-using System.Globalization;
 using System.Numerics;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace CarCrawler.Services.Calculators.Providers;
@@ -55,7 +52,7 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 
         if (responseMessage == null || !responseMessage.IsSuccessStatusCode)
         {
-            Console.WriteLine("=================> ERROR");
+            HandleRequestError(responseMessage.ReasonPhrase);
             return null;
         }
 
@@ -80,11 +77,16 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine("=================> ERROR");
+                HandleRequestError(ex.Message);
             }
         }
 
         return response;
+    }
+    private static void HandleRequestError(string? message)
+    {
+        Console.WriteLine("An unexpected error occurred:");
+        Console.WriteLine(message ?? "unknown error");
     }
     private Uri BuildUri ()
     {

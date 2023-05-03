@@ -1,14 +1,24 @@
-﻿using CarCrawler.Services.Scrapers;
+﻿using CarCrawler.Services.Calculators;
+using CarCrawler.Services.Scrapers;
+using System.Numerics;
 
 namespace CarCrawler.Services.Generators.Sheets;
 
 internal class AdsListReportSheetDataGeneratorService
 {
     private readonly Uri _adsListLink;
+    private readonly DistanceMatrixCalculator _distanceMatrixCalculator;
+    private readonly Vector2 _originCoordinates;
 
-    public AdsListReportSheetDataGeneratorService (Uri adsListLink)
+    public AdsListReportSheetDataGeneratorService (
+        Uri adsListLink, 
+        DistanceMatrixCalculator distanceMatrixCalculator, 
+        Vector2 originCoords
+    )
     {
         _adsListLink = adsListLink;
+        _distanceMatrixCalculator = distanceMatrixCalculator;
+        _originCoordinates = originCoords;
     }
 
     public  IList<IList<object>> Execute ()
@@ -38,9 +48,24 @@ internal class AdsListReportSheetDataGeneratorService
                 Console.WriteLine($"---------- Processing link {i + 1}/{pageLinksArray.Length}...");
 
                 var newAdDetails = new AdDetailsScraperService(pageLinksArray[i]).Call();
+
                 if (newAdDetails == null) { continue; }
 
-                yield return newAdDetails;
+                // TODO: Move it to distinct class
+                var sellerCoordinates = newAdDetails?.SellerCoordinates;
+                if (sellerCoordinates != null)
+                {
+                    var distanceMatrix = _distanceMatrixCalculator.Calculate(_originCoordinates, sellerCoordinates.Value);
+
+                    if (distanceMatrix != null)
+                    {
+                        newAdDetails!.TravelDuration = distanceMatrix.Duration;
+                        newAdDetails!.TravelDistance = distanceMatrix.DistanceMeters;
+                    }
+                }
+
+
+                yield return newAdDetails!;
             }
         }
     }
