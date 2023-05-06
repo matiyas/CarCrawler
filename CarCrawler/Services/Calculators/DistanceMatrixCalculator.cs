@@ -1,5 +1,5 @@
 ﻿using CarCrawler.Services.Calculators.Providers.Interfaces;
-using System.Numerics;
+using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Services.Calculators;
 
@@ -12,7 +12,7 @@ internal class DistanceMatrixCalculator
         _provider = provider;
     }
 
-    public DistanceMatrix? Calculate (Vector2 origin, Vector2 destination)
+    public DistanceMatrix? Calculate (Point origin, Point destination)
     {
         _provider.Origin = origin;
         _provider.Destination = destination;

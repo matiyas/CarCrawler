@@ -1,5 +1,6 @@
 ﻿using CarCrawler.Services.Builders;
 using CarCrawler.Services.Calculators.Providers.Interfaces;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
 using System.Numerics;
 using System.Text.Json;
@@ -8,8 +9,8 @@ namespace CarCrawler.Services.Calculators.Providers;
 
 internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 {
-    public Vector2 Origin { get; set; }
-    public Vector2 Destination { get; set; }
+    public Point Origin { get; set; }
+    public Point Destination { get; set; }
 
     public DistanceMatrix? GetDistanceMatrix()
     {

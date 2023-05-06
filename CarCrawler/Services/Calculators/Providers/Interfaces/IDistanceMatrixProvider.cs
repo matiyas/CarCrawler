@@ -1,11 +1,11 @@
-﻿using System.Numerics;
+﻿using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Services.Calculators.Providers.Interfaces;
 
 internal interface IDistanceMatrixProvider
 {
-    Vector2 Origin { get; set; }
-    Vector2 Destination { get; set; }
+    Point Origin { get; set; }
+    Point Destination { get; set; }
 
     DistanceMatrix? GetDistanceMatrix ();
 }

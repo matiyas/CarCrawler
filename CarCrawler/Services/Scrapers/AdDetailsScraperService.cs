@@ -1,9 +1,11 @@
-﻿using HtmlAgilityPack;
+﻿using CarCrawler.Database;
+using HtmlAgilityPack;
 using ISO._4217;
+using NetTopologySuite.Geometries;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using static CarCrawler.Models.AdDetails;
+using static CarCrawler.Database.AdDetails;
 
 namespace CarCrawler.Services.Scrapers;
 
@@ -97,7 +99,7 @@ internal class AdDetailsScraperService
         var adIdNode = htmlDocNode.SelectSingleNode(adIdNodeXPath);
         var id = adIdNode?.InnerText?.Trim();
 
-        _adDetails.Id = id;
+        _adDetails.ExternalId = id;
     }
 
     private void GetSellerCoordinatesFromHtmlDocNode(HtmlNode htmlDocNode)
@@ -118,7 +120,7 @@ internal class AdDetailsScraperService
             return;
         }
 
-        _adDetails.SellerCoordinates = new System.Numerics.Vector2(longitude, latitude);
+        _adDetails.SellerCoordinates = new Point(longitude, latitude);
     }
 
     private static string? GetAdISOCurrencySymbolFromAdSummaryNode(HtmlNode priceNode)

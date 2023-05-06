@@ -1,8 +1,10 @@
-﻿using System.Numerics;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using NetTopologySuite.Geometries;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CarCrawler.Models;
+namespace CarCrawler.Database;
 
-internal class AdDetails
+internal class AdDetails : BaseEntity
 {
     public static readonly string[] SpreadsheetColumns = new[]
     {
@@ -38,7 +40,8 @@ internal class AdDetails
         Hydrogen = 7
     }
 
-    public string? Id { get; set; }
+    public int Id { get; set; }
+    public string? ExternalId { get; set; }
     public string? Brand { get; set; }
     public string? Description { get; set; }
     public Fuel? FuelType { get; set; }
@@ -49,7 +52,9 @@ internal class AdDetails
     public decimal? Price { get; set; }
     public DateOnly? RegistrationDate { get; set; }
     public string? RegistrationNumber { get; set; }
-    public Vector2? SellerCoordinates { get; set; }
+    public Point? SellerCoordinates { get; set; }
+
+    [Column(TypeName = "json")]
     public IEnumerable<string>? SellerPhones { get; set; }
     public Uri? Url { get; set; }
     public string? VIN { get; set; }
@@ -58,22 +63,22 @@ internal class AdDetails
     public int? TravelDistance { get; set; }
 
     // Wydzielić do oddzielnej klasy
-    public IList<object> ToGoogleSpreadsheetRow ()
+    public IList<object> ToGoogleSpreadsheetRow()
     {
         var type = GetType()!;
-        var row = SpreadsheetColumns.Select(column => 
+        var row = SpreadsheetColumns.Select(column =>
         {
             var property = type.GetProperty(column)!;
             var value = property.GetValue(this, null)!;
             var formattedValue = value switch
             {
                 null => "",
-                Vector2 vector => $"{vector.X};{vector.Y}",
+                Point point => $"{point.X};{point.Y}",
                 IEnumerable<string> enumerable => string.Join(";", enumerable),
                 int distanceMeters when column == "TravelDistance" => (distanceMeters / 1000).ToString(),
                 _ => value.ToString()
             };
-            
+
             return (object)formattedValue!;
         });
 

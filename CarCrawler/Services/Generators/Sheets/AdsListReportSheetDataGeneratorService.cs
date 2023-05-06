@@ -1,6 +1,7 @@
-﻿using CarCrawler.Services.Calculators;
+﻿using CarCrawler.Database;
+using CarCrawler.Services.Calculators;
 using CarCrawler.Services.Scrapers;
-using System.Numerics;
+using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Services.Generators.Sheets;
 
@@ -8,12 +9,12 @@ internal class AdsListReportSheetDataGeneratorService
 {
     private readonly Uri _adsListLink;
     private readonly DistanceMatrixCalculator _distanceMatrixCalculator;
-    private readonly Vector2 _originCoordinates;
+    private readonly Point _originCoordinates;
 
     public AdsListReportSheetDataGeneratorService (
         Uri adsListLink, 
         DistanceMatrixCalculator distanceMatrixCalculator, 
-        Vector2 originCoords
+        Point originCoords
     )
     {
         _adsListLink = adsListLink;
@@ -35,7 +36,7 @@ internal class AdsListReportSheetDataGeneratorService
         return spreadsheetRowsList;
     }
 
-    private IEnumerable<AdDetails> GetAdDetails ()
+    public IEnumerable<AdDetails> GetAdDetails ()
     {
         var adListLinksScraperService = new AdListLinksScraperService(_adsListLink);
 
@@ -55,7 +56,7 @@ internal class AdsListReportSheetDataGeneratorService
                 var sellerCoordinates = newAdDetails?.SellerCoordinates;
                 if (sellerCoordinates != null)
                 {
-                    var distanceMatrix = _distanceMatrixCalculator.Calculate(_originCoordinates, sellerCoordinates.Value);
+                    var distanceMatrix = _distanceMatrixCalculator.Calculate(_originCoordinates, sellerCoordinates);
 
                     if (distanceMatrix != null)
                     {
