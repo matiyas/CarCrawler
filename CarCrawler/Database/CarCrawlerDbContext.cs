@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace CarCrawler.Database;
 
@@ -56,16 +57,12 @@ internal class CarCrawlerDbContext : DbContext
             (entry.State == EntityState.Added || entry.State == EntityState.Modified);
     }
 
-    //protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    //{
-    //    configurationBuilder
-    //        .Properties<Vector2>()
-    //        .HaveConversion<Vector2Converter>();
-
-    //    configurationBuilder
-    //        .Properties<IEnumerable<string>>()
-    //        .HaveConversion<EnumerableConverter>();
-    //}
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder
+            .Properties<IEnumerable<string>>()
+            .HaveConversion<EnumerableConverter>();
+    }
     //protected override void OnModelCreating(ModelBuilder modelBuilder)
     //{
     //    modelBuilder.Entity<AdDetails>()

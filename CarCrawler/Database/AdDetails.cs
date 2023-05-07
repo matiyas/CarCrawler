@@ -53,8 +53,6 @@ internal class AdDetails : BaseEntity
     public DateOnly? RegistrationDate { get; set; }
     public string? RegistrationNumber { get; set; }
     public Point? SellerCoordinates { get; set; }
-
-    [Column(TypeName = "json")]
     public IEnumerable<string>? SellerPhones { get; set; }
     public Uri? Url { get; set; }
     public string? VIN { get; set; }

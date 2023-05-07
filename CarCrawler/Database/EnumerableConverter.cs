@@ -11,5 +11,5 @@ internal class EnumerableConverter : ValueConverter<IEnumerable<string>, string>
 
     static readonly Expression<Func<IEnumerable<string>, string>> ConvertFromEnumerableToString = e => string.Join(";", e);
 
-    static readonly Expression<Func<string, IEnumerable<string>>> ConvertFromStringToEnumerable = s => new[] { "1" };
+    static readonly Expression<Func<string, IEnumerable<string>>> ConvertFromStringToEnumerable = s => s.Split(";", StringSplitOptions.None);
 }

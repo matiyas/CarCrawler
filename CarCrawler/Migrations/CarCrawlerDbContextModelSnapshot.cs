@@ -64,7 +64,7 @@ namespace CarCrawler.Migrations
                         .HasColumnType("POINT");
 
                     b.Property<string>("SellerPhones")
-                        .HasColumnType("json");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("TravelDistance")
                         .HasColumnType("INTEGER");

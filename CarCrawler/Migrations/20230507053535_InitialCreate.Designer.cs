@@ -12,8 +12,8 @@ using NetTopologySuite.Geometries;
 namespace CarCrawler.Migrations
 {
     [DbContext(typeof(CarCrawlerDbContext))]
-    [Migration("20230506183837_AddTimestampsToModels")]
-    partial class AddTimestampsToModels
+    [Migration("20230507053535_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -66,7 +66,7 @@ namespace CarCrawler.Migrations
                         .HasColumnType("POINT");
 
                     b.Property<string>("SellerPhones")
-                        .HasColumnType("json");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("TravelDistance")
                         .HasColumnType("INTEGER");

@@ -31,12 +31,14 @@ namespace CarCrawler.Migrations
                     RegistrationDate = table.Column<DateOnly>(type: "TEXT", nullable: true),
                     RegistrationNumber = table.Column<string>(type: "TEXT", nullable: true),
                     SellerCoordinates = table.Column<Point>(type: "POINT", nullable: true),
-                    SellerPhones = table.Column<string>(type: "json", nullable: true),
+                    SellerPhones = table.Column<string>(type: "TEXT", nullable: true),
                     Url = table.Column<string>(type: "TEXT", nullable: true),
                     VIN = table.Column<string>(type: "TEXT", nullable: true),
                     Year = table.Column<string>(type: "TEXT", nullable: true),
                     TravelDuration = table.Column<TimeSpan>(type: "TEXT", nullable: true),
-                    TravelDistance = table.Column<int>(type: "INTEGER", nullable: true)
+                    TravelDistance = table.Column<int>(type: "INTEGER", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

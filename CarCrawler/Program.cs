@@ -34,9 +34,12 @@ var uri = new Uri(uriString);
 var generator = new AdsListReportSheetDataGeneratorService(uri, distanceMatrixCalculator, originCoords);
 var db = new CarCrawlerDbContext();
 var adDetails = generator.GetAdDetails();
-db.AddRange(adDetails);
-db.SaveChanges();
-
+var externalIds = db.AdDetails.Select(e => e.ExternalId);
+var newRecords = adDetails.Where(e => !externalIds.Contains(e.ExternalId));
+db.BulkMerge(adDetails, options =>
+{
+    options.ColumnPrimaryKeyExpression = e => e.ExternalId;
+});
 
 //var spreadsheetData = generator.Execute().DistinctBy(list => list[0]).ToList();
 //var spreadsheetBody = new ValueRange() { Values = spreadsheetData };
