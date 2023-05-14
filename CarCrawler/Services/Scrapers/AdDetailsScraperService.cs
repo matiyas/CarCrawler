@@ -23,22 +23,27 @@ internal class AdDetailsScraperService
     public AdDetails? Call()
     {
         #region XPaths
+
         var descriptionNodeXPath = $@"//main//div[contains(@class, ""offer-description__description"")]";
         var parametersNodeXPath = $@"//main//div[contains(@class, ""parametersArea"")]//li[contains(@class, ""offer-params__item"")]";
         var summaryNodeXPath = @"//main//div[contains(@class, ""offer-summary"")]";
         var priceNodeXPath = $@"{summaryNodeXPath}//div[contains(@class, ""offer-price"")]";
-        #endregion
+
+        #endregion XPaths
 
         #region Nodes
+
         var offerId = GetOfferIdFromUrl();
         var htmlDocNode = LoadHtmlDocNode();
         var summaryNode = htmlDocNode.SelectSingleNode(summaryNodeXPath);
         var priceNode = htmlDocNode.SelectSingleNode(priceNodeXPath);
         var parametersNodes = htmlDocNode.SelectNodes(parametersNodeXPath);
         var descriptionNode = htmlDocNode.SelectSingleNode(descriptionNodeXPath);
-        #endregion
+
+        #endregion Nodes
 
         #region Assignments
+
         _adDetails.Url = _adLink;
         GetIdFromHtmlDocNode(htmlDocNode);
         GetDetailsFromSummaryNode(summaryNode);
@@ -48,7 +53,8 @@ internal class AdDetailsScraperService
         GetVinFromHtmlDocNode(htmlDocNode);
         GetSellerCoordinatesFromHtmlDocNode(htmlDocNode);
         GetSellerPhonesFromOfferId(offerId);
-        #endregion
+
+        #endregion Assignments
 
         return _adDetails;
     }
@@ -87,7 +93,8 @@ internal class AdDetailsScraperService
             HandleRequestError(ex.Message);
         }
     }
-    private static void HandleRequestError (string? message)
+
+    private static void HandleRequestError(string? message)
     {
         Logger.Log("An unexpected error occurred:");
         Logger.Log(message ?? "unknown error");
@@ -114,7 +121,7 @@ internal class AdDetailsScraperService
         var longtitudeString = adMapDataNode.GetAttributeValue("data-map-lon", null);
         var latitudeString = adMapDataNode.GetAttributeValue("data-map-lat", null);
 
-        if (!float.TryParse(longtitudeString, NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) || 
+        if (!float.TryParse(longtitudeString, NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
             !float.TryParse(latitudeString, NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
         {
             return;
@@ -149,12 +156,10 @@ internal class AdDetailsScraperService
         var priceString = priceNode.GetAttributeValue("data-price", "");
         priceString = Regex.Replace(priceString, @"\s+", "");
 
-
         if (string.IsNullOrWhiteSpace(priceString) || !decimal.TryParse(priceString, out var price))
         {
             return null;
         }
-
 
         return price;
     }
@@ -225,9 +230,9 @@ internal class AdDetailsScraperService
 
     private void GetDetailsFromPriceNode(HtmlNode? priceNode)
     {
-        if (priceNode == null) 
-        { 
-            return; 
+        if (priceNode == null)
+        {
+            return;
         }
 
         _adDetails.Price = GetAdPriceFromAdPriceNode(priceNode);
@@ -235,9 +240,9 @@ internal class AdDetailsScraperService
 
     private void GetDetailsFromSummaryNode(HtmlNode summaryNode)
     {
-        if (summaryNode == null) 
-        { 
-            return; 
+        if (summaryNode == null)
+        {
+            return;
         }
 
         _adDetails.Name = GetAdNameFromAdSummaryNode(summaryNode);
@@ -283,6 +288,7 @@ internal class AdDetailsScraperService
 
         return idMatch.Groups["id"].ToString();
     }
+
     private HtmlNode LoadHtmlDocNode()
     {
         var web = new HtmlWeb();

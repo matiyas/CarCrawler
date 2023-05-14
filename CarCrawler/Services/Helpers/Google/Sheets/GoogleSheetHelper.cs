@@ -7,15 +7,15 @@ namespace CarCrawler.Services.Helpers.Google.Sheets;
 internal class GoogleSheetHelper
 {
     public SheetsService Service { get; set; } = default!;
-    const string ApplicationName = "CarCrawler";
-    static public string[] Scopes = { SheetsService.Scope.Spreadsheets };
+    private const string ApplicationName = "CarCrawler";
+    public static string[] Scopes = { SheetsService.Scope.Spreadsheets };
 
-    public GoogleSheetHelper ()
+    public GoogleSheetHelper()
     {
         InitializeService();
     }
 
-    private void InitializeService ()
+    private void InitializeService()
     {
         var credential = GetCredentialsFromFile();
         var initializer = new BaseClientService.Initializer()
@@ -27,7 +27,7 @@ internal class GoogleSheetHelper
         Service = new SheetsService(initializer);
     }
 
-    private static GoogleCredential GetCredentialsFromFile ()
+    private static GoogleCredential GetCredentialsFromFile()
     {
         using var stream = new FileStream("config/google/sheets/client_secrets.json", FileMode.Open, FileAccess.Read);
 

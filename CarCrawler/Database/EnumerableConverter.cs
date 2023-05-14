@@ -5,11 +5,11 @@ namespace CarCrawler.Database;
 
 internal class EnumerableConverter : ValueConverter<IEnumerable<string>, string>
 {
-    public EnumerableConverter () : 
-        base(ConvertFromEnumerableToString, ConvertFromStringToEnumerable) 
+    public EnumerableConverter() :
+        base(ConvertFromEnumerableToString, ConvertFromStringToEnumerable)
     { }
 
-    static readonly Expression<Func<IEnumerable<string>, string>> ConvertFromEnumerableToString = e => string.Join(";", e);
+    private static readonly Expression<Func<IEnumerable<string>, string>> ConvertFromEnumerableToString = e => string.Join(";", e);
 
-    static readonly Expression<Func<string, IEnumerable<string>>> ConvertFromStringToEnumerable = s => s.Split(";", StringSplitOptions.None);
+    private static readonly Expression<Func<string, IEnumerable<string>>> ConvertFromStringToEnumerable = s => s.Split(";", StringSplitOptions.None);
 }

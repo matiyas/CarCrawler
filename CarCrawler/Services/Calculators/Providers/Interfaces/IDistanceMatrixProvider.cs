@@ -7,5 +7,5 @@ internal interface IDistanceMatrixProvider
     Point Origin { get; set; }
     Point Destination { get; set; }
 
-    DistanceMatrix? GetDistanceMatrix ();
+    DistanceMatrix? GetDistanceMatrix();
 }

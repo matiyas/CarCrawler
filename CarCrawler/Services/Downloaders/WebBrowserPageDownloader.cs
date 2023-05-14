@@ -7,7 +7,7 @@ internal class WebBrowserPageDownloader : IWebPageDownloader
 {
     private readonly IWebBrowserDriver _webBrowserDriver;
 
-    public WebBrowserPageDownloader (IWebBrowserDriver webBrowserDriver)
+    public WebBrowserPageDownloader(IWebBrowserDriver webBrowserDriver)
     {
         _webBrowserDriver = webBrowserDriver;
     }
@@ -16,9 +16,9 @@ internal class WebBrowserPageDownloader : IWebPageDownloader
     {
         var content = string.Empty;
 
-        _webBrowserDriver.WaitForElement(url, xPath, webElement => 
-        { 
-            content = webElement.GetAttribute("outerHTML"); 
+        _webBrowserDriver.WaitForElement(url, xPath, webElement =>
+        {
+            content = webElement.GetAttribute("outerHTML");
         });
 
         return content;

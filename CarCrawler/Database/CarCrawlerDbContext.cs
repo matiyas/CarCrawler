@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
-using System.Collections;
 
 namespace CarCrawler.Database;
 
@@ -11,8 +10,7 @@ internal class CarCrawlerDbContext : DbContext
 
     public string DbPath { get; }
 
-    
-    public CarCrawlerDbContext ()
+    public CarCrawlerDbContext()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
@@ -22,9 +20,10 @@ internal class CarCrawlerDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite(
-            $"Data Source={DbPath}", 
+            $"Data Source={DbPath}",
             optionsBuilder => optionsBuilder.UseNetTopologySuite());
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AdDetails>()
@@ -51,9 +50,9 @@ internal class CarCrawlerDbContext : DbContext
         return base.SaveChanges();
     }
 
-    private static bool IsEntryAddedOrModified (EntityEntry entry)
+    private static bool IsEntryAddedOrModified(EntityEntry entry)
     {
-        return entry.Entity is BaseEntity && 
+        return entry.Entity is BaseEntity &&
             (entry.State == EntityState.Added || entry.State == EntityState.Modified);
     }
 

@@ -14,17 +14,16 @@ namespace CarCrawler;
 
 internal class App
 {
-    readonly CarCrawlerDbContext _db;
-    IEnumerable<AdDetails> _adDetails;
+    private readonly CarCrawlerDbContext _db;
+    private IEnumerable<AdDetails> _adDetails;
 
-    public App ()
+    public App()
     {
-       
         _db = new CarCrawlerDbContext();
         _adDetails = null!;
     }
 
-    public void Run ()
+    public void Run()
     {
         SetCultureInfo();
         PrintLogo();
@@ -35,14 +34,14 @@ internal class App
         Logger.Log("Finished");
     }
 
-    static void SetCultureInfo()
+    private static void SetCultureInfo()
     {
         CultureInfo culture = new("en-US");
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
-    void PrintLogo()
+    private void PrintLogo()
     {
         using var streamReader = new StreamReader("assets/ascii/logo.txt");
         var logoString = streamReader.ReadToEnd();
@@ -50,7 +49,7 @@ internal class App
         Console.WriteLine(logoString);
     }
 
-    void FetchAdDetails()
+    private void FetchAdDetails()
     {
         var matrixProvider = new GoogleDistanceMatrixProvider();
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
@@ -58,14 +57,14 @@ internal class App
             Configuration.Get.GetValue<float>("OriginCoordsLon"),
             Configuration.Get.GetValue<float>("OriginCoordsLat"));
         var fetcher = new FetchAdDetailsService(
-            Configuration.Get.GetValue<Uri>("OffertUrl"), 
-            distanceMatrixCalculator, 
+            Configuration.Get.GetValue<Uri>("OffertUrl"),
+            distanceMatrixCalculator,
             originCoords);
 
         _adDetails = fetcher.Execute();
     }
 
-    void SaveAdDetailsInDb ()
+    private void SaveAdDetailsInDb()
     {
         var externalIds = _db.AdDetails.Select(e => e.ExternalId);
         var newRecords = _adDetails.Where(e => !externalIds.Contains(e.ExternalId));
@@ -76,7 +75,7 @@ internal class App
         });
     }
 
-    void SaveAdDetailsInSpreadsheet ()
+    private void SaveAdDetailsInSpreadsheet()
     {
         var spreadsheetData = AdsListReportSheetDataGeneratorService.Generate(_db.AdDetails);
         var spreadsheetBody = new ValueRange() { Values = spreadsheetData };
@@ -84,7 +83,7 @@ internal class App
         var service = googleSheetHelper.Service;
         var spreadsheetsValues = service.Spreadsheets.Values;
         var request = spreadsheetsValues.Update(
-            spreadsheetBody, 
+            spreadsheetBody,
             Configuration.Get.GetValue<string>("SpreadsheetId"),
             Configuration.Get.GetValue<string>("SpreadsheetName"));
 

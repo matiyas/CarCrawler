@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using NetTopologySuite.Geometries;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Database;
 

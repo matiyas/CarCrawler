@@ -2,5 +2,5 @@
 
 internal interface IWebPageDownloader
 {
-    string DownloadPageContent (Uri url, string? xPath);
+    string DownloadPageContent(Uri url, string? xPath);
 }

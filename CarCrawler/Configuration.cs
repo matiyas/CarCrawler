@@ -4,9 +4,9 @@ namespace CarCrawler;
 
 internal static class Configuration
 {
-    static readonly IConfiguration _configuration;
+    private static readonly IConfiguration _configuration;
 
-    static Configuration ()
+    static Configuration()
     {
         if (_configuration != null) return;
 

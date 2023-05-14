@@ -2,7 +2,6 @@
 using CarCrawler.Services.Calculators.Providers.Interfaces;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
-using System.Numerics;
 using System.Text.Json;
 
 namespace CarCrawler.Services.Calculators.Providers;
@@ -36,7 +35,7 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
         return distanceMatrix;
     }
 
-    private JObject? GetDistanceMatrixResponsJson ()
+    private JObject? GetDistanceMatrixResponsJson()
     {
         var responseBody = GetDistanceMatrixResponseBody();
         if (responseBody == null)
@@ -45,9 +44,9 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
         }
 
         return JObject.Parse(responseBody);
-
     }
-    private string? GetDistanceMatrixResponseBody ()
+
+    private string? GetDistanceMatrixResponseBody()
     {
         var responseMessage = GetDistanceMatrixResponseMessage();
 
@@ -61,10 +60,11 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 
         return responseBody;
     }
-    private HttpResponseMessage? GetDistanceMatrixResponseMessage ()
+
+    private HttpResponseMessage? GetDistanceMatrixResponseMessage()
     {
         HttpResponseMessage? response = default;
-        
+
         using (var client = new HttpClient())
         {
             try
@@ -84,12 +84,14 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 
         return response;
     }
+
     private static void HandleRequestError(string? message)
     {
         Logger.Log("An unexpected error occurred:");
         Logger.Log(message ?? "unknown error");
     }
-    private Uri BuildUri ()
+
+    private Uri BuildUri()
     {
         var apiKey = GetGoogleMapsApiKey();
         var baseUrl = "https://maps.googleapis.com/maps/api/distancematrix/json";
@@ -104,7 +106,7 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
         return new Uri(stringUrl);
     }
 
-    private static string GetGoogleMapsApiKey ()
+    private static string GetGoogleMapsApiKey()
     {
         var jsonString = File.ReadAllText("config/google/maps/client_secrets.json");
         var jsonDocument = JsonDocument.Parse(jsonString);

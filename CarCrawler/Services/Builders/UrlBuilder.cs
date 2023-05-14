@@ -12,7 +12,7 @@ public class UrlBuilder
         {
             return builder.ToString();
         }
-            
+
         builder.Append('?');
         foreach (KeyValuePair<string, string> pair in parameters)
         {

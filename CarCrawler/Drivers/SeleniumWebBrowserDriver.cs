@@ -19,7 +19,8 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
     {
         xPath ??= "//";
 
-        ExecuteActionWithWebDriver(url, () => { 
+        ExecuteActionWithWebDriver(url, () =>
+        {
             var webElement = _driver.FindElement(By.XPath(xPath));
             action(webElement);
         });
@@ -43,6 +44,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
             _driver.Quit();
         }
     }
+
     private void InitializeBrowserDriverWithOptions(string browser)
     {
         switch (browser)
@@ -50,6 +52,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
             case "firefox":
                 InitializeFirefoxDriverWithOptions();
                 break;
+
             default:
                 InitializeChromeDriverWithOptions();
                 break;
@@ -62,6 +65,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
         ((FirefoxOptions)_options).AddArgument("--headless");
         _driver = new FirefoxDriver((FirefoxOptions)_options);
     }
+
     private void InitializeChromeDriverWithOptions()
     {
         _options = new ChromeOptions();

@@ -51,7 +51,6 @@ internal class FetchAdDetailsService
                     }
                 }
 
-
                 yield return newAdDetails!;
             }
         }

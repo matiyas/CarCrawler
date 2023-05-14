@@ -10,6 +10,7 @@ internal class AdListLinksScraperService
     private readonly Uri _adListLink;
     private byte _currentPage = 1;
     private HtmlNode? _htmlDocNode;
+
     private Uri AdListLinkWithPage
     {
         get
@@ -42,6 +43,7 @@ internal class AdListLinksScraperService
 
         return GetLinksFromHtmlNodes(htmlNodes);
     }
+
     internal IEnumerable<IEnumerable<Uri>> GetLinksFromPages()
     {
         do
@@ -52,7 +54,6 @@ internal class AdListLinksScraperService
             yield return GetLinksFromSinglePage();
 
             _currentPage = GetNextPage();
-
         } while (_currentPage > 0);
     }
 
@@ -62,7 +63,8 @@ internal class AdListLinksScraperService
 
         return _htmlDocNode!.SelectNodes(adXPath);
     }
-    private byte GetNextPage ()
+
+    private byte GetNextPage()
     {
         var paginationListNodeXPath = @"//ul[contains(@class, ""pagination-list"")]";
         var activePageNodeXPath = $@"{paginationListNodeXPath}/li[contains(@class, ""pagination-item__active"")]";
@@ -91,6 +93,7 @@ internal class AdListLinksScraperService
 
         return uri;
     }
+
     private HtmlNode GetHtmlDocNodeForCurrentPage()
     {
         var webDriver = new SeleniumWebBrowserDriver("chrome");
