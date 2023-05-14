@@ -29,12 +29,8 @@ internal class GoogleSheetHelper
 
     private static GoogleCredential GetCredentialsFromFile ()
     {
-        GoogleCredential credential;
-        using (var stream = new FileStream("config/google/sheets/client_secrets.json", FileMode.Open, FileAccess.Read))
-        {
-            credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
-        }
+        using var stream = new FileStream("config/google/sheets/client_secrets.json", FileMode.Open, FileAccess.Read);
 
-        return credential;
+        return GoogleCredential.FromStream(stream).CreateScoped(Scopes);
     }
 }

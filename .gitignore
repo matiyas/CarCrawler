@@ -364,3 +364,4 @@ FodyWeavers.xsd
 CarCrawler/config/google/sheets/client_secrets.json
 CarCrawler/config/google/maps/client_secrets.json
 /CarCrawler/Properties/launchSettings.json
+/CarCrawler/config/car_crawler.json

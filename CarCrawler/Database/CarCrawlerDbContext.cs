@@ -63,16 +63,4 @@ internal class CarCrawlerDbContext : DbContext
             .Properties<IEnumerable<string>>()
             .HaveConversion<EnumerableConverter>();
     }
-    //protected override void OnModelCreating(ModelBuilder modelBuilder)
-    //{
-    //    modelBuilder.Entity<AdDetails>()
-    //        .Property(e => e.SellerCoordinates)
-    //        .HasColumnType("float")
-    //        .HasColumnName("X");
-
-    //    modelBuilder.Entity<AdDetails>()
-    //        .Property(e => e.SellerCoordinates)
-    //        .HasColumnType("float")
-    //        .HasColumnName("Y");
-    //}
 }
