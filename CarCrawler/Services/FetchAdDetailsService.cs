@@ -8,12 +8,12 @@ namespace CarCrawler.Services;
 internal class FetchAdDetailsService
 {
     private readonly Uri _adsListLink;
-    private readonly DistanceMatrixCalculator _distanceMatrixCalculator;
+    private readonly IDistanceMatrixCalculator _distanceMatrixCalculator;
     private readonly Point _originCoordinates;
 
     public FetchAdDetailsService(
         Uri adsListLink,
-        DistanceMatrixCalculator distanceMatrixCalculator,
+        IDistanceMatrixCalculator distanceMatrixCalculator,
         Point originCoords
     )
     {
