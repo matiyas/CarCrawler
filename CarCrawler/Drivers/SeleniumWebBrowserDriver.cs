@@ -35,7 +35,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Logger.Log(ex.ToString());
         }
         finally
         {

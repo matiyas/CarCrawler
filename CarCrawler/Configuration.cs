@@ -1,20 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace CarCrawler;
 
-internal class Configuration
+internal static class Configuration
 {
-    public Uri OffertUrl { get; set; } = null!;
-    public string SpreadsheetId { get; set; } = null!;
-    public string SpreadsheetName { get; set; } = null!;
-    public float OriginCoordsLon { get; set; }
-    public float OriginCoordsLat { get; set; }
+    static readonly IConfiguration _configuration;
 
-    public static Configuration Read ()
+    static Configuration ()
     {
-        var configPath = "config/car_crawler.json";
-        var jsonString = File.ReadAllText(configPath);
+        if (_configuration != null) return;
 
-        return JsonConvert.DeserializeObject<Configuration>(jsonString)!;
+        _configuration = new ConfigurationBuilder()
+           .AddJsonFile("config/car_crawler.json")
+           .Build();
     }
+
+    public static IConfiguration Get => _configuration;
 }

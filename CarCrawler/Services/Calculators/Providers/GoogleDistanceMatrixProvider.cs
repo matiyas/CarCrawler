@@ -86,8 +86,8 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
     }
     private static void HandleRequestError(string? message)
     {
-        Console.WriteLine("An unexpected error occurred:");
-        Console.WriteLine(message ?? "unknown error");
+        Logger.Log("An unexpected error occurred:");
+        Logger.Log(message ?? "unknown error");
     }
     private Uri BuildUri ()
     {

@@ -46,7 +46,7 @@ internal class AdListLinksScraperService
     {
         do
         {
-            Console.WriteLine($"---------- Processing page {_currentPage}...");
+            Logger.Log($"Processing page {_currentPage}...");
 
             _htmlDocNode = GetHtmlDocNodeForCurrentPage();
             yield return GetLinksFromSinglePage();

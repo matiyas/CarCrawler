@@ -5,6 +5,7 @@ using CarCrawler.Services.Calculators.Providers;
 using CarCrawler.Services.Generators.Sheets;
 using CarCrawler.Services.Helpers.Google.Sheets;
 using Google.Apis.Sheets.v4.Data;
+using Microsoft.Extensions.Configuration;
 using NetTopologySuite.Geometries;
 using System.Globalization;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
@@ -13,13 +14,12 @@ namespace CarCrawler;
 
 internal class App
 {
-    readonly Configuration _config;
     readonly CarCrawlerDbContext _db;
     IEnumerable<AdDetails> _adDetails;
 
     public App ()
     {
-        _config = Configuration.Read();
+       
         _db = new CarCrawlerDbContext();
         _adDetails = null!;
     }
@@ -32,7 +32,7 @@ internal class App
         SaveAdDetailsInDb();
         SaveAdDetailsInSpreadsheet();
 
-        Console.WriteLine("---------- Finished");
+        Logger.Log("Finished");
     }
 
     static void SetCultureInfo()
@@ -42,18 +42,25 @@ internal class App
         CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
-    static void PrintLogo()
+    void PrintLogo()
     {
         using var streamReader = new StreamReader("assets/ascii/logo.txt");
-        Console.WriteLine(streamReader.ReadToEnd());
+        var logoString = streamReader.ReadToEnd();
+
+        Console.WriteLine(logoString);
     }
 
     void FetchAdDetails()
     {
         var matrixProvider = new GoogleDistanceMatrixProvider();
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
-        var originCoords = new Point(_config.OriginCoordsLon, _config.OriginCoordsLat);
-        var fetcher = new FetchAdDetailsService(_config.OffertUrl, distanceMatrixCalculator, originCoords);
+        var originCoords = new Point(
+            Configuration.Get.GetValue<float>("OriginCoordsLon"),
+            Configuration.Get.GetValue<float>("OriginCoordsLat"));
+        var fetcher = new FetchAdDetailsService(
+            Configuration.Get.GetValue<Uri>("OffertUrl"), 
+            distanceMatrixCalculator, 
+            originCoords);
 
         _adDetails = fetcher.Execute();
     }
@@ -76,13 +83,16 @@ internal class App
         var googleSheetHelper = new GoogleSheetHelper();
         var service = googleSheetHelper.Service;
         var spreadsheetsValues = service.Spreadsheets.Values;
-        var request = spreadsheetsValues.Update(spreadsheetBody, _config.SpreadsheetId, _config.SpreadsheetName);
+        var request = spreadsheetsValues.Update(
+            spreadsheetBody, 
+            Configuration.Get.GetValue<string>("SpreadsheetId"),
+            Configuration.Get.GetValue<string>("SpreadsheetName"));
 
         request.ValueInputOption = UpdateRequest.ValueInputOptionEnum.USERENTERED;
         request.IncludeValuesInResponse = true;
 
         var response = request.Execute();
 
-        Console.WriteLine(response);
+        Logger.Log(response?.ToString() ?? "Saving to spreadsheet failed");
     }
 }

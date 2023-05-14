@@ -32,8 +32,7 @@ internal class FetchAdDetailsService
 
             for (var i = 0; i < pageLinksArray.Length; i++)
             {
-                // TODO: Implement logger
-                Console.WriteLine($"---------- Processing link {i + 1}/{pageLinksArray.Length}...");
+                Logger.Log($"Processing link {i + 1}/{pageLinksArray.Length}...");
 
                 var newAdDetails = new AdDetailsScraperService(pageLinksArray[i]).Call();
 
