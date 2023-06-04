@@ -2,7 +2,7 @@
 
 namespace CarCrawler.Database;
 
-internal class AdDetails : BaseEntity, ISpreadsheetable
+internal class AdDetails : BaseEntity
 {
     public enum Fuel
     {

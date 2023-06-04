@@ -6,7 +6,7 @@ internal class EntityToSpreadsheetRowConverter : IEntityToSpreadsheetRowConverte
 {
     private readonly IEnumerable<string> _columns;
 
-    public EntityToSpreadsheetRowConverter (IEnumerable<string> columns)
+    public EntityToSpreadsheetRowConverter(IEnumerable<string> columns)
     {
         _columns = columns;
     }
@@ -14,22 +14,36 @@ internal class EntityToSpreadsheetRowConverter : IEntityToSpreadsheetRowConverte
     public IList<object> Convert<T>(T entity) where T : notnull
     {
         var type = entity.GetType();
-        var row = _columns.Select(column =>
-        {
-            var property = type.GetProperty(column)!;
-            var value = property.GetValue(entity, null)!;
-            var formattedValue = value switch
-            {
-                null => "",
-                Point point => $"{point.X};{point.Y}",
-                IEnumerable<string> enumerable => string.Join(";", enumerable),
-                int distanceMeters when column == "TravelDistance" => (distanceMeters / 1000).ToString(),
-                _ => value.ToString()
-            };
-
-            return (object)formattedValue!;
-        });
+        var row = _columns.Select(ConvertValue(entity, type));
 
         return row.ToList();
     }
+
+    private static Func<string, object> ConvertValue<T>(T entity, Type type) where T : notnull
+    {
+        return column =>
+        {
+            var property = type.GetProperty(column)!;
+            var propertyValue = property.GetValue(entity, null)!;
+
+            return propertyValue switch
+            {
+                null => ConvertNullValue(),
+                Point value => ConvertPointValue(value),
+                IEnumerable<string> value => ConvertEnumerableValue(value),
+                int value when column == "TravelDistance" => ConvertDistanceMetersValue(value),
+                _ => ConvertDefaultValue(propertyValue)
+            };
+        };
+    }
+
+    private static string ConvertDefaultValue(object value) => value.ToString()!;
+
+    private static string ConvertDistanceMetersValue(int value) => (value / 1000).ToString();
+
+    private static string ConvertEnumerableValue(IEnumerable<string> value) => string.Join(";", value);
+
+    private static string ConvertPointValue(Point value) => $"{value.X};{value.Y}";
+
+    private static string ConvertNullValue() => "";
 }
