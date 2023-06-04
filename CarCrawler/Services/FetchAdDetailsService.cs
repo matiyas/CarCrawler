@@ -14,8 +14,7 @@ internal class FetchAdDetailsService
     public FetchAdDetailsService(
         Uri adsListLink,
         IDistanceMatrixCalculator distanceMatrixCalculator,
-        Point originCoords
-    )
+        Point originCoords)
     {
         _adsListLink = adsListLink;
         _distanceMatrixCalculator = distanceMatrixCalculator;
@@ -35,24 +34,24 @@ internal class FetchAdDetailsService
                 Logger.Log($"Processing link {i + 1}/{pageLinksArray.Length}...");
 
                 var newAdDetails = new AdDetailsScraperService(pageLinksArray[i]).Call();
+                if (newAdDetails == null) continue; 
 
-                if (newAdDetails == null) { continue; }
-
-                // TODO: Move it to distinct class
-                var sellerCoordinates = newAdDetails?.SellerCoordinates;
-                if (sellerCoordinates != null)
-                {
-                    var distanceMatrix = _distanceMatrixCalculator.Calculate(_originCoordinates, sellerCoordinates);
-
-                    if (distanceMatrix != null)
-                    {
-                        newAdDetails!.TravelDuration = distanceMatrix.Duration;
-                        newAdDetails!.TravelDistance = distanceMatrix.DistanceMeters;
-                    }
-                }
+                CalculateDistanceFromSeller(newAdDetails);
 
                 yield return newAdDetails!;
             }
         }
+    }
+
+    private void CalculateDistanceFromSeller(AdDetails? newAdDetails)
+    {
+        var sellerCoordinates = newAdDetails?.SellerCoordinates;
+        if (sellerCoordinates == null) return;
+            
+        var distanceMatrix = _distanceMatrixCalculator.Calculate(_originCoordinates, sellerCoordinates);
+        if (distanceMatrix == null) return;
+
+        newAdDetails!.TravelDuration = distanceMatrix.Duration;
+        newAdDetails!.TravelDistance = distanceMatrix.DistanceMeters;
     }
 }

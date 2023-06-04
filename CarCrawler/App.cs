@@ -1,4 +1,5 @@
-﻿using CarCrawler.Database;
+﻿using CarCrawler.Converters;
+using CarCrawler.Database;
 using CarCrawler.Services;
 using CarCrawler.Services.Calculators;
 using CarCrawler.Services.Calculators.Providers;
@@ -41,7 +42,7 @@ internal class App
         CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
-    private void PrintLogo()
+    private static void PrintLogo()
     {
         using var streamReader = new StreamReader("assets/ascii/logo.txt");
         var logoString = streamReader.ReadToEnd();
@@ -74,7 +75,9 @@ internal class App
 
     private void SaveAdDetailsInSpreadsheet()
     {
-        var spreadsheetData = AdsListReportSheetDataGeneratorService.Generate(_db.AdDetails);
+        var converter = new EntityToSpreadsheetRowConverter(AdDetails.SpreadsheetColumns);
+        var spreadsheetGenerator = new ListReportSheetDataGeneratorService(converter, AdDetails.SpreadsheetColumns);
+        var spreadsheetData = spreadsheetGenerator.Generate(_db.AdDetails);
         var spreadsheetBody = new ValueRange() { Values = spreadsheetData };
         var googleSheetHelper = new GoogleSheetHelper();
         var service = googleSheetHelper.Service;

@@ -2,30 +2,8 @@
 
 namespace CarCrawler.Database;
 
-internal class AdDetails : BaseEntity
+internal class AdDetails : BaseEntity, ISpreadsheetable
 {
-    public static readonly string[] SpreadsheetColumns = new[]
-    {
-        "Id",
-        "Brand",
-        "Description",
-        "FuelType",
-        "ISOCurrencySymbol",
-        "MileageKilometers",
-        "Model",
-        "Name",
-        "Price",
-        "RegistrationDate",
-        "RegistrationNumber",
-        "SellerCoordinates",
-        "SellerPhones",
-        "Url",
-        "VIN",
-        "Year",
-        "TravelDuration",
-        "TravelDistance"
-    };
-
     public enum Fuel
     {
         Petrol = 0,
@@ -58,26 +36,25 @@ internal class AdDetails : BaseEntity
     public TimeSpan? TravelDuration { get; set; }
     public int? TravelDistance { get; set; }
 
-    // Wydzielić do oddzielnej klasy
-    public IList<object> ToGoogleSpreadsheetRow()
+    public static IEnumerable<string> SpreadsheetColumns => new[]
     {
-        var type = GetType()!;
-        var row = SpreadsheetColumns.Select(column =>
-        {
-            var property = type.GetProperty(column)!;
-            var value = property.GetValue(this, null)!;
-            var formattedValue = value switch
-            {
-                null => "",
-                Point point => $"{point.X};{point.Y}",
-                IEnumerable<string> enumerable => string.Join(";", enumerable),
-                int distanceMeters when column == "TravelDistance" => (distanceMeters / 1000).ToString(),
-                _ => value.ToString()
-            };
-
-            return (object)formattedValue!;
-        });
-
-        return row.ToList();
-    }
+        "Id",
+        "Brand",
+        "Description",
+        "FuelType",
+        "ISOCurrencySymbol",
+        "MileageKilometers",
+        "Model",
+        "Name",
+        "Price",
+        "RegistrationDate",
+        "RegistrationNumber",
+        "SellerCoordinates",
+        "SellerPhones",
+        "Url",
+        "VIN",
+        "Year",
+        "TravelDuration",
+        "TravelDistance"
+    };
 }
