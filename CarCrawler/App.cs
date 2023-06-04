@@ -55,8 +55,8 @@ internal class App
         var matrixProvider = new GoogleDistanceMatrixProvider();
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
         var originCoords = new Point(
-            Configuration.Get.GetValue<float>("OriginCoordsLon"),
-            Configuration.Get.GetValue<float>("OriginCoordsLat"));
+            Configuration.Get.GetValue<float>("OriginCoordsLat"),
+            Configuration.Get.GetValue<float>("OriginCoordsLon"));
         var fetcher = new FetchAdDetailsService(
             Configuration.Get.GetValue<Uri>("OffertUrl"),
             distanceMatrixCalculator,
