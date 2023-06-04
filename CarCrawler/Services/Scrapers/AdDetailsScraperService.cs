@@ -3,7 +3,6 @@ using HtmlAgilityPack;
 using ISO._4217;
 using NetTopologySuite.Geometries;
 using System.Globalization;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using static CarCrawler.Database.AdDetails;
 
@@ -59,45 +58,10 @@ internal class AdDetailsScraperService
         return _adDetails;
     }
 
-    // TODO: Wydzielić do oddzielnej klasy
     private void GetSellerPhonesFromOfferId(string? offerId)
     {
-        if (offerId == null)
-        {
-            return;
-        }
-
-        using var client = new HttpClient();
-        try
-        {
-            var requestUri = @$"https://www.otomoto.pl/ajax/misc/contact/all_phones/{offerId}/"!;
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-            request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("User-Agent", "Mozilla/5.0");
-
-            var response = client.SendAsync(request).Result;
-            if (!response.IsSuccessStatusCode)
-            {
-                HandleRequestError(response.ReasonPhrase);
-                return;
-            }
-
-            var responseBody = response.Content.ReadAsStringAsync().Result;
-            var jsonDocument = JsonDocument.Parse(responseBody);
-            var data = jsonDocument.RootElement;
-
-            _adDetails.SellerPhones = data.EnumerateArray().Select(e => e.GetProperty("number").ToString());
-        }
-        catch (HttpRequestException ex)
-        {
-            HandleRequestError(ex.Message);
-        }
-    }
-
-    private static void HandleRequestError(string? message)
-    {
-        Logger.Log("An unexpected error occurred:");
-        Logger.Log(message ?? "unknown error");
+        var service = new AdSellerPhoneScraperService(_adDetails);
+        service.GetSellerPhonesFromOfferId(offerId);
     }
 
     private void GetIdFromHtmlDocNode(HtmlNode htmlDocNode)
@@ -276,15 +240,10 @@ internal class AdDetailsScraperService
         }
     }
 
-    // TODO: Wydzielić do oddzielnej klasy
-    // TODO: Wywoływać asynchronicznie
     private string? GetOfferIdFromUrl()
     {
         var idMatch = Regex.Match(_adLink.ToString(), @"-ID(?<id>\w+)\.html");
-        if (!idMatch.Success)
-        {
-            return null;
-        }
+        if (!idMatch.Success) return null;
 
         return idMatch.Groups["id"].ToString();
     }

@@ -1,6 +1,4 @@
-﻿using CarCrawler.Database;
-
-namespace CarCrawler.Converters;
+﻿namespace CarCrawler.Converters;
 
 internal interface IEntityToSpreadsheetRowConverter
 {

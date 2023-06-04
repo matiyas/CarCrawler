@@ -34,7 +34,7 @@ internal class FetchAdDetailsService
                 Logger.Log($"Processing link {i + 1}/{pageLinksArray.Length}...");
 
                 var newAdDetails = new AdDetailsScraperService(pageLinksArray[i]).Call();
-                if (newAdDetails == null) continue; 
+                if (newAdDetails == null) continue;
 
                 CalculateDistanceFromSeller(newAdDetails);
 
@@ -47,7 +47,7 @@ internal class FetchAdDetailsService
     {
         var sellerCoordinates = newAdDetails?.SellerCoordinates;
         if (sellerCoordinates == null) return;
-            
+
         var distanceMatrix = _distanceMatrixCalculator.Calculate(_originCoordinates, sellerCoordinates);
         if (distanceMatrix == null) return;
 
