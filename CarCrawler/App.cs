@@ -69,10 +69,7 @@ internal class App
         var externalIds = _db.AdDetails.Select(e => e.ExternalId);
         var newRecords = _adDetails.Where(e => !externalIds.Contains(e.ExternalId));
 
-        _db.BulkMerge(_adDetails, options =>
-        {
-            options.ColumnPrimaryKeyExpression = e => e.ExternalId;
-        });
+        _db.BulkMerge(_adDetails, "ExternalId");
     }
 
     private void SaveAdDetailsInSpreadsheet()
