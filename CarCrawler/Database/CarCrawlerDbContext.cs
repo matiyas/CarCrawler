@@ -22,6 +22,8 @@ internal class CarCrawlerDbContext : DbContext
         optionsBuilder.UseSqlite(
             $"Data Source={DbPath}",
             optionsBuilder => optionsBuilder.UseNetTopologySuite());
+        optionsBuilder.EnableSensitiveDataLogging();
+        optionsBuilder.LogTo(Logger.Log);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
