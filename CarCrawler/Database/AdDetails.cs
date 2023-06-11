@@ -35,6 +35,7 @@ internal class AdDetails : BaseEntity
     public string? Year { get; set; }
     public TimeSpan? TravelDuration { get; set; }
     public int? TravelDistance { get; set; }
+    public VehicleHistoryReport? VehicleHistoryReport { get; set; }
 
     public static IEnumerable<string> SpreadsheetColumns => new[]
     {

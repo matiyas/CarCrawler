@@ -33,6 +33,12 @@ internal class CarCrawlerDbContext : DbContext
             .HasConversion(
                 v => JsonConvert.SerializeObject(v),
                 v => JsonConvert.DeserializeObject<IEnumerable<string>>(v));
+
+        modelBuilder.Entity<AdDetails>()
+            .HasOne(adDetails => adDetails.VehicleHistoryReport)
+            .WithOne(report => report.AdDetails)
+            .HasForeignKey<VehicleHistoryReport>(report => report.AdDetailsId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public override int SaveChanges()
