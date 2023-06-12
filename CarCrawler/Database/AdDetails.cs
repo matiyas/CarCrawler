@@ -36,26 +36,4 @@ internal class AdDetails : BaseEntity
     public TimeSpan? TravelDuration { get; set; }
     public int? TravelDistance { get; set; }
     public VehicleHistoryReport? VehicleHistoryReport { get; set; }
-
-    public static IEnumerable<string> SpreadsheetColumns => new[]
-    {
-        "Id",
-        "Brand",
-        "Description",
-        "FuelType",
-        "ISOCurrencySymbol",
-        "MileageKilometers",
-        "Model",
-        "Name",
-        "Price",
-        "RegistrationDate",
-        "RegistrationNumber",
-        "SellerCoordinates",
-        "SellerPhones",
-        "Url",
-        "VIN",
-        "Year",
-        "TravelDuration",
-        "TravelDistance"
-    };
 }

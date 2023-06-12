@@ -10,6 +10,8 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
     private WebDriver _driver;
     private DriverOptions _options;
 
+    public WebDriver WebDriver => _driver;
+
     public SeleniumWebBrowserDriver(string browser)
     {
         InitializeBrowserDriverWithOptions(browser);

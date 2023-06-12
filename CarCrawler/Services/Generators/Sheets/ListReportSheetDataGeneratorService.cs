@@ -5,20 +5,16 @@ namespace CarCrawler.Services.Generators.Sheets;
 internal class ListReportSheetDataGeneratorService
 {
     private readonly IEntityToSpreadsheetRowConverter _converter;
-    private readonly IEnumerable<string> _columns;
 
-    public ListReportSheetDataGeneratorService(
-        IEntityToSpreadsheetRowConverter converter,
-        IEnumerable<string> columns)
+    public ListReportSheetDataGeneratorService(IEntityToSpreadsheetRowConverter converter)
     {
         _converter = converter;
-        _columns = columns;
     }
 
-    public IList<IList<object>> Generate<T>(IEnumerable<T> list) where T : notnull
+    public IList<IList<object>> Generate(IEnumerable<object> list)
     {
         var spreadsheetRows = list.Select(_converter.Convert);
-        var spreadsheetRowsList = new List<IList<object>> { _columns.ToList<object>() };
+        var spreadsheetRowsList = new List<IList<object>> { _converter.Columns.ToList<object>() };
 
         spreadsheetRowsList.AddRange(spreadsheetRows);
 

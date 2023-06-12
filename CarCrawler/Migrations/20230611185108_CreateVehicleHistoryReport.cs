@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -9,6 +8,9 @@ namespace CarCrawler.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Sqlite:InitSpatialMetaData", true);
+
             migrationBuilder.CreateTable(
                 name: "VehicleHistoryReport",
                 columns: table => new
@@ -17,8 +19,6 @@ namespace CarCrawler.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     AdDetailsId = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfOwnersInTheCountry = table.Column<int>(type: "INTEGER", nullable: true),
-                    IsTechnicalExaminationUpToDate = table.Column<bool>(type: "INTEGER", nullable: true),
-                    IsLiabilityInsuranceUpToDate = table.Column<bool>(type: "INTEGER", nullable: true),
                     FirstRegistrationAbroad = table.Column<DateOnly>(type: "TEXT", nullable: true),
                     FirstRegistrationInTheCountry = table.Column<DateOnly>(type: "TEXT", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),

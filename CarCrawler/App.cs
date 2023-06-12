@@ -5,7 +5,9 @@ using CarCrawler.Services.Calculators;
 using CarCrawler.Services.Calculators.Providers;
 using CarCrawler.Services.Generators.Sheets;
 using CarCrawler.Services.Helpers.Google.Sheets;
+using CarCrawler.Services.Scrapers;
 using Google.Apis.Sheets.v4.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NetTopologySuite.Geometries;
 using System.Globalization;
@@ -17,11 +19,13 @@ internal class App
 {
     private readonly CarCrawlerDbContext _db;
     private IEnumerable<AdDetails> _adDetails;
+    private IEnumerable<VehicleHistoryReport> _vehicleHistoryReports;
 
     public App()
     {
         _db = new CarCrawlerDbContext();
         _adDetails = null!;
+        _vehicleHistoryReports = new List<VehicleHistoryReport>();
     }
 
     public void Run()
@@ -30,7 +34,10 @@ internal class App
         PrintLogo();
         FetchAdDetails();
         SaveAdDetailsInDb();
+        FetchVehiclesHistory();
+        SaveVehiclesHistoryReportsInDb();
         SaveAdDetailsInSpreadsheet();
+
 
         Logger.Log("Finished");
     }
@@ -73,11 +80,43 @@ internal class App
         _db.BulkMerge(_adDetails, "ExternalId");
     }
 
+    private void SaveVehiclesHistoryReportsInDb()
+    {
+        var vins = _db.VehicleHistoryReport.Select(e => e.AdDetailsId);
+        var newRecords = _vehicleHistoryReports.Where(e => !vins.Contains(e.AdDetailsId));
+
+        _db.BulkMerge(_vehicleHistoryReports, "AdDetailsId");
+    }
+
+    private void FetchVehiclesHistory()
+    {
+        var adDetails = GetAdDetailsAbleToSearchHistory().ToArray();
+        var adDetailsCount = adDetails.Length;
+
+        for (var i = 0; i < adDetailsCount; ++i)
+        {
+            var adDetailEntry = adDetails[i];
+            if (adDetailEntry == null) continue;
+
+            var vin = adDetailEntry.VIN!;
+            var registrationNumber = adDetailEntry.RegistrationNumber!;
+            var registrationDate = adDetailEntry.RegistrationDate!;
+            var scraper = new VehicleHistoryReportScraperService(registrationNumber, (DateOnly)registrationDate, vin);
+            var report = scraper.GetReport();
+            report.AdDetailsId = adDetailEntry.Id;
+
+            _vehicleHistoryReports = _vehicleHistoryReports.Append(report);
+
+            Logger.Log($"Processed {i + 1}/{adDetailsCount} vehicle history reports...");
+        }
+    }
+
     private void SaveAdDetailsInSpreadsheet()
     {
-        var converter = new EntityToSpreadsheetRowConverter(AdDetails.SpreadsheetColumns);
-        var spreadsheetGenerator = new ListReportSheetDataGeneratorService(converter, AdDetails.SpreadsheetColumns);
-        var spreadsheetData = spreadsheetGenerator.Generate(_db.AdDetails);
+        var converter = new AdDetailsToSpreadsheetRowConverter();
+        var spreadsheetGenerator = new ListReportSheetDataGeneratorService(converter);
+        var spreadsheetData = spreadsheetGenerator.Generate(_db.AdDetails.Include(ad => ad.VehicleHistoryReport));
+
         var spreadsheetBody = new ValueRange() { Values = spreadsheetData };
         var googleSheetHelper = new GoogleSheetHelper();
         var service = googleSheetHelper.Service;
@@ -93,5 +132,15 @@ internal class App
         var response = request.Execute();
 
         Logger.Log(response?.ToString() ?? "Saving to spreadsheet failed");
+    }
+
+    private IEnumerable<AdDetails> GetAdDetailsAbleToSearchHistory ()
+    {
+        return from details in _db.AdDetails
+               where
+                   details.VIN != null &&
+                   details.RegistrationDate != null &&
+                   details.RegistrationNumber != null
+               select details;
     }
 }

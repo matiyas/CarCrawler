@@ -2,5 +2,7 @@
 
 internal interface IEntityToSpreadsheetRowConverter
 {
-    IList<object> Convert<T>(T entity) where T : notnull;
+    IList<object> Convert(object entity);
+
+    IEnumerable<string> Columns { get; }
 }

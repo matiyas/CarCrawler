@@ -7,6 +7,7 @@ namespace CarCrawler.Database;
 internal class CarCrawlerDbContext : DbContext
 {
     public DbSet<AdDetails> AdDetails { get; set; } = null!;
+    public DbSet<VehicleHistoryReport> VehicleHistoryReport { get; set; } = null!;
 
     public string DbPath { get; }
 
