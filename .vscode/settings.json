@@ -1,3 +1,4 @@
 {
-  "nuxt.isNuxtApp": false
+  "nuxt.isNuxtApp": false,
+  "dotnet.defaultSolution": "CarCrawler.sln"
 }

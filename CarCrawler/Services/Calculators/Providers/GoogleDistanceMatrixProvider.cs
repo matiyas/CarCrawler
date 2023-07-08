@@ -8,8 +8,19 @@ namespace CarCrawler.Services.Calculators.Providers;
 
 internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 {
-    public Point Origin { get; set; }
-    public Point Destination { get; set; }
+    private readonly ILogger? _logger;
+
+    public Point Origin { get; set; } = new Point(0, 0);
+    public Point Destination { get; set; } = new Point(0, 0);
+
+    public GoogleDistanceMatrixProvider()
+    {
+    }
+
+    public GoogleDistanceMatrixProvider(ILogger logger) : this()
+    {
+        _logger = logger;
+    }
 
     public DistanceMatrix? GetDistanceMatrix()
     {
@@ -52,7 +63,7 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 
         if (responseMessage == null || !responseMessage.IsSuccessStatusCode)
         {
-            HandleRequestError(responseMessage.ReasonPhrase);
+            HandleRequestError(responseMessage?.ReasonPhrase);
             return null;
         }
 
@@ -85,10 +96,10 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
         return response;
     }
 
-    private static void HandleRequestError(string? message)
+    private void HandleRequestError(string? message)
     {
-        Logger.Log("An unexpected error occurred:");
-        Logger.Log(message ?? "unknown error");
+        _logger?.Log("An unexpected error occurred:");
+        _logger?.Log(message ?? "unknown error");
     }
 
     private Uri BuildUri()

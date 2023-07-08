@@ -6,6 +6,8 @@ namespace CarCrawler.Database;
 
 internal class CarCrawlerDbContext : DbContext
 {
+    private readonly ILogger? _logger;
+
     public DbSet<AdDetails> AdDetails { get; set; } = null!;
     public DbSet<VehicleHistoryReport> VehicleHistoryReport { get; set; } = null!;
 
@@ -18,13 +20,19 @@ internal class CarCrawlerDbContext : DbContext
         DbPath = Path.Join(path, "carCrawler.db");
     }
 
+    public CarCrawlerDbContext(ILogger logger) : this()
+    {
+        _logger = logger;
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite(
             $"Data Source={DbPath}",
             optionsBuilder => optionsBuilder.UseNetTopologySuite());
         optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.LogTo(Logger.Log);
+
+        if (_logger is not null) optionsBuilder.LogTo(_logger.Log);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

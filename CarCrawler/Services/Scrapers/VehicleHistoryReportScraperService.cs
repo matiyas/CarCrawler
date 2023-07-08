@@ -15,9 +15,10 @@ internal class VehicleHistoryReportScraperService
     private readonly VehicleHistoryReport _vehicleHistoryReport;
     private readonly Uri _baseSiteUrl = new("https://historiapojazdu.gov.pl/");
     private readonly WebDriver _webDriver;
+    private readonly ILogger _logger;
 
     public VehicleHistoryReportScraperService(
-        string registrationNumber, 
+        string registrationNumber,
         DateOnly dateOfFirstRegistration,
         string vin)
     {
@@ -29,6 +30,14 @@ internal class VehicleHistoryReportScraperService
         _webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
     }
 
+    public VehicleHistoryReportScraperService(
+        string registrationNumber,
+        DateOnly dateOfFirstRegistration,
+        string vin,
+        ILogger logger) : this(registrationNumber, dateOfFirstRegistration, vin)
+    {
+        _logger = logger;
+    }
 
     public VehicleHistoryReport GetReport()
     {
@@ -48,7 +57,7 @@ internal class VehicleHistoryReportScraperService
             message.AppendLine($"\tDate of first registration: {_dateOfFirstRegistration}");
             message.AppendLine($"\tException: {ex.Message}");
 
-            Logger.Log(message.ToString());
+            _logger?.Log(message.ToString());
         }
         finally
         {
@@ -58,14 +67,14 @@ internal class VehicleHistoryReportScraperService
         return _vehicleHistoryReport;
     }
 
-    private void FetchDataFromPage ()
+    private void FetchDataFromPage()
     {
         var timelineEl = _webDriver.FindElement(By.Id("timeline"));
         var timelineSummaryBoxEl = _webDriver.FindElement(By.Id("timeline-summary-box"));
 
-        _vehicleHistoryReport.FirstRegistrationAbroad = 
+        _vehicleHistoryReport.FirstRegistrationAbroad =
             GetDateFromTimelineElement(timelineEl, "PIERWSZA_REJESTRACJA");
-        _vehicleHistoryReport.FirstRegistrationInTheCountry = 
+        _vehicleHistoryReport.FirstRegistrationInTheCountry =
             GetDateFromTimelineElement(timelineEl, "PIERWSZA_REJESTRACJA_W_POLSCE");
         _vehicleHistoryReport.NumberOfOwnersInTheCountry =
             GetNumberOfOwnersFromTimelineSummaryElement(timelineSummaryBoxEl);
@@ -73,18 +82,18 @@ internal class VehicleHistoryReportScraperService
             GetNumberOfOwnersFromTimelineSummaryElement(timelineSummaryBoxEl);
     }
 
-    private static DateOnly? GetDateFromTimelineElement (IWebElement? timelineElement, string labelClass)
+    private static DateOnly? GetDateFromTimelineElement(IWebElement? timelineElement, string labelClass)
     {
         if (timelineElement == null) return null;
         IWebElement? line;
 
-        try 
-        { 
-            line = timelineElement.FindElement(By.ClassName(labelClass)); 
+        try
+        {
+            line = timelineElement.FindElement(By.ClassName(labelClass));
         }
-        catch (NoSuchElementException) 
-        { 
-            return null; 
+        catch (NoSuchElementException)
+        {
+            return null;
         }
 
         var strVal = line.FindElement(By.XPath("./../*[@class='date']/p"))?.Text;
@@ -97,18 +106,18 @@ internal class VehicleHistoryReportScraperService
         return date;
     }
 
-    private static int? GetNumberOfOwnersFromTimelineSummaryElement (IWebElement? timelineSummaryElement)
+    private static int? GetNumberOfOwnersFromTimelineSummaryElement(IWebElement? timelineSummaryElement)
     {
         if (timelineSummaryElement == null) return null;
 
         var label = "Właściciele (od rejestracji do wygenerowania raportu)";
         var stringValue = GetValueFromTimelineSummary(timelineSummaryElement, label);
-        if (string.IsNullOrEmpty(stringValue) || !int.TryParse(stringValue, out int value)) return null; 
+        if (string.IsNullOrEmpty(stringValue) || !int.TryParse(stringValue, out int value)) return null;
 
         return value;
     }
 
-    private static string? GetValueFromTimelineSummary (IWebElement? timelineSummaryElement, string label)
+    private static string? GetValueFromTimelineSummary(IWebElement? timelineSummaryElement, string label)
     {
         if (timelineSummaryElement == null) return null;
 
@@ -116,7 +125,7 @@ internal class VehicleHistoryReportScraperService
         return timelineSummaryElement.FindElement(By.XPath(xPath))?.Text;
     }
 
-    private void FillForm ()
+    private void FillForm()
     {
         FillField("rej", _registrationNumber);
         FillField("vin", _vin);
@@ -125,7 +134,7 @@ internal class VehicleHistoryReportScraperService
     }
 
     // The SendKeys method does not work due to the use of a mask in the date input
-    private void FillField (string id, string value)
+    private void FillField(string id, string value)
     {
         var inputId = GetInputId(id);
         var script = $"document.getElementById('{inputId}').value = '{value}'";
@@ -133,13 +142,13 @@ internal class VehicleHistoryReportScraperService
         ((IJavaScriptExecutor)_webDriver).ExecuteScript(script);
     }
 
-    private void ClickElement (string id)
+    private void ClickElement(string id)
     {
         var el = _webDriver.FindElement(By.Id(id));
         el.Click();
     }
 
-    private static string GetInputId (string inputId)
+    private static string GetInputId(string inputId)
     {
         var baseInputId = "_historiapojazduportlet_WAR_historiapojazduportlet_:";
         return $"{baseInputId}{inputId}";

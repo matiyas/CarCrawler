@@ -3,16 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 
-namespace CarCrawler;
+namespace CarCrawler.Loggers;
 
-public class Logger
+public class Logger : ILogger
 {
-    private static readonly ILogger<Logger> _logger;
+    private readonly ILogger<Logger> _logger;
 
-    static Logger()
+    public Logger()
     {
-        if (_logger != null) return;
-
         var logLevel = Configuration.Get.GetValue<LogLevel>("Logging:LogLevel:Default");
         var loggerFactory = LoggerFactory.Create(builder =>
         {
@@ -26,5 +24,5 @@ public class Logger
         _logger = loggerFactory.CreateLogger<Logger>();
     }
 
-    public static void Log(string message) => _logger.LogInformation(message);
+    public void Log(string message) => _logger.LogInformation(message);
 }

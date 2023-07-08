@@ -9,12 +9,18 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
 {
     private WebDriver _driver;
     private DriverOptions _options;
+    private ILogger _logger;
 
     public WebDriver WebDriver => _driver;
 
     public SeleniumWebBrowserDriver(string browser)
     {
         InitializeBrowserDriverWithOptions(browser);
+    }
+
+    public SeleniumWebBrowserDriver(string browser, ILogger logger) : this(browser)
+    {
+        _logger = logger;
     }
 
     public void WaitForElement(Uri url, string? xPath, Action<IWebElement> action)
@@ -38,7 +44,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
         }
         catch (Exception ex)
         {
-            Logger.Log(ex.ToString());
+            _logger.Log(ex.ToString());
         }
         finally
         {

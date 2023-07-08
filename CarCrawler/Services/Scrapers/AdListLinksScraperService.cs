@@ -1,6 +1,7 @@
 ﻿using CarCrawler.Drivers;
 using CarCrawler.Services.Downloaders;
 using HtmlAgilityPack;
+using System.Data;
 using System.Web;
 
 namespace CarCrawler.Services.Scrapers;
@@ -10,6 +11,7 @@ internal class AdListLinksScraperService
     private readonly Uri _adListLink;
     private byte _currentPage = 1;
     private HtmlNode? _htmlDocNode;
+    private readonly ILogger _logger;
 
     private Uri AdListLinkWithPage
     {
@@ -33,6 +35,11 @@ internal class AdListLinksScraperService
         _adListLink = adListLink;
     }
 
+    internal AdListLinksScraperService(Uri adListLink, ILogger logger) : this(adListLink)
+    {
+        _logger = logger;
+    }
+
     internal IEnumerable<Uri> GetLinksFromSinglePage()
     {
         var htmlNodes = GetHtmlNodes();
@@ -48,7 +55,7 @@ internal class AdListLinksScraperService
     {
         do
         {
-            Logger.Log($"Processing page {_currentPage}...");
+            _logger?.Log($"Processing page {_currentPage}...");
 
             _htmlDocNode = GetHtmlDocNodeForCurrentPage();
             yield return GetLinksFromSinglePage();

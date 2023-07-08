@@ -1,4 +1,6 @@
-﻿using CarCrawler.Converters;
+﻿global using CarCrawler.Loggers;
+
+using CarCrawler.Converters;
 using CarCrawler.Database;
 using CarCrawler.Services;
 using CarCrawler.Services.Calculators;
@@ -18,14 +20,16 @@ namespace CarCrawler;
 internal class App
 {
     private readonly CarCrawlerDbContext _db;
+    private readonly ILogger _logger;
     private IEnumerable<AdDetails> _adDetails;
     private IEnumerable<VehicleHistoryReport> _vehicleHistoryReports;
 
     public App()
     {
-        _db = new CarCrawlerDbContext();
+        _db = new CarCrawlerDbContext(_logger);
         _adDetails = null!;
         _vehicleHistoryReports = new List<VehicleHistoryReport>();
+        _logger = new Logger();
     }
 
     public void Run()
@@ -38,8 +42,7 @@ internal class App
         SaveVehiclesHistoryReportsInDb();
         SaveAdDetailsInSpreadsheet();
 
-
-        Logger.Log("Finished");
+        _logger.Log("Finished");
     }
 
     private static void SetCultureInfo()
@@ -59,7 +62,7 @@ internal class App
 
     private void FetchAdDetails()
     {
-        var matrixProvider = new GoogleDistanceMatrixProvider();
+        var matrixProvider = new GoogleDistanceMatrixProvider(_logger);
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
         var originCoords = new Point(
             Configuration.Get.GetValue<float>("OriginCoordsLat"),
@@ -107,7 +110,7 @@ internal class App
 
             _vehicleHistoryReports = _vehicleHistoryReports.Append(report);
 
-            Logger.Log($"Processed {i + 1}/{adDetailsCount} vehicle history reports...");
+            _logger.Log($"Processed {i + 1}/{adDetailsCount} vehicle history reports...");
         }
     }
 
@@ -131,10 +134,10 @@ internal class App
 
         var response = request.Execute();
 
-        Logger.Log(response?.ToString() ?? "Saving to spreadsheet failed");
+        _logger.Log(response?.ToString() ?? "Saving to spreadsheet failed");
     }
 
-    private IEnumerable<AdDetails> GetAdDetailsAbleToSearchHistory ()
+    private IEnumerable<AdDetails> GetAdDetailsAbleToSearchHistory()
     {
         return from details in _db.AdDetails
                where

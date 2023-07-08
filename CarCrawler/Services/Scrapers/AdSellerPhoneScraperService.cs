@@ -5,8 +5,11 @@ using System.Text.Json;
 internal class AdSellerPhoneScraperService
 {
     private readonly AdDetails _adDetails;
+    private readonly ILogger _logger;
 
     public AdSellerPhoneScraperService(AdDetails adDetails) => _adDetails = adDetails;
+
+    public AdSellerPhoneScraperService(AdDetails adDetails, ILogger logger) : this(adDetails) => _logger = logger;
 
     public void GetSellerPhonesFromOfferId(string? offerId)
     {
@@ -39,9 +42,9 @@ internal class AdSellerPhoneScraperService
         }
     }
 
-    private static void HandleRequestError(string? message)
+    private void HandleRequestError(string? message)
     {
-        Logger.Log("An unexpected error occurred:");
-        Logger.Log(message ?? "unknown error");
+        _logger?.Log("An unexpected error occurred:");
+        _logger?.Log(message ?? "unknown error");
     }
 }

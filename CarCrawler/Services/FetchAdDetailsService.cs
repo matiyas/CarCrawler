@@ -10,6 +10,7 @@ internal class FetchAdDetailsService
     private readonly Uri _adsListLink;
     private readonly IDistanceMatrixCalculator _distanceMatrixCalculator;
     private readonly Point _originCoordinates;
+    private readonly ILogger _logger;
 
     public FetchAdDetailsService(
         Uri adsListLink,
@@ -19,6 +20,15 @@ internal class FetchAdDetailsService
         _adsListLink = adsListLink;
         _distanceMatrixCalculator = distanceMatrixCalculator;
         _originCoordinates = originCoords;
+    }
+
+    public FetchAdDetailsService(
+        Uri adsListLink,
+        IDistanceMatrixCalculator distanceMatrixCalculator,
+        Point originCoords,
+        ILogger logger) : this(adsListLink, distanceMatrixCalculator, originCoords)
+    {
+        _logger = logger;
     }
 
     public IEnumerable<AdDetails> Execute()
@@ -31,7 +41,7 @@ internal class FetchAdDetailsService
 
             for (var i = 0; i < pageLinksArray.Length; i++)
             {
-                Logger.Log($"Processing link {i + 1}/{pageLinksArray.Length}...");
+                _logger?.Log($"Processing link {i + 1}/{pageLinksArray.Length}...");
 
                 var newAdDetails = new AdDetailsScraperService(pageLinksArray[i]).Call();
                 if (newAdDetails == null) continue;
