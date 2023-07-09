@@ -1,7 +1,4 @@
-﻿global using CarCrawler.Loggers;
-global using CarCrawler.Configuration;
-
-using CarCrawler.Converters;
+﻿using CarCrawler.Converters;
 using CarCrawler.Database;
 using CarCrawler.Services;
 using CarCrawler.Services.Calculators;
@@ -15,8 +12,6 @@ using NetTopologySuite.Geometries;
 using System.Globalization;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
 
-namespace CarCrawler;
-
 internal class App
 {
     private readonly CarCrawlerDbContext _db;
@@ -27,7 +22,7 @@ internal class App
 
     public App()
     {
-        _configuration = new Configuration.AppConfiguration();
+        _configuration = new AppConfiguration();
         _logger = new AppLogger(_configuration);
         _db = new CarCrawlerDbContext(_logger);
         _adDetails = null!;

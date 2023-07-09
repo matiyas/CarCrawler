@@ -1,5 +1,6 @@
 ﻿global using CarCrawler.Models;
-using CarCrawler;
+global using CarCrawler.Loggers;
+global using CarCrawler.Configuration;
 
 var app = new App();
 app.Run();
