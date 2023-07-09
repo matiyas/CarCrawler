@@ -122,10 +122,9 @@ public class AdDetailsScraperService
         var priceString = priceNode.GetAttributeValue("data-price", "");
         priceString = Regex.Replace(priceString, @"\s+", "");
 
-        if (string.IsNullOrWhiteSpace(priceString) || !decimal.TryParse(priceString, out var price))
-        {
+        if (string.IsNullOrWhiteSpace(priceString) ||
+            !decimal.TryParse(priceString, NumberStyles.Number, CultureInfo.CurrentCulture, out var price))
             return null;
-        }
 
         return price;
     }
