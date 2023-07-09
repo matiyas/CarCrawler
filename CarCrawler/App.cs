@@ -1,4 +1,5 @@
 ﻿global using CarCrawler.Loggers;
+global using CarCrawler.Configuration;
 
 using CarCrawler.Converters;
 using CarCrawler.Database;
@@ -10,7 +11,6 @@ using CarCrawler.Services.Helpers.Google.Sheets;
 using CarCrawler.Services.Scrapers;
 using Google.Apis.Sheets.v4.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using NetTopologySuite.Geometries;
 using System.Globalization;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
@@ -21,15 +21,17 @@ internal class App
 {
     private readonly CarCrawlerDbContext _db;
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
     private IEnumerable<AdDetails> _adDetails;
     private IEnumerable<VehicleHistoryReport> _vehicleHistoryReports;
 
     public App()
     {
+        _configuration = new Configuration.Configuration();
+        _logger = new Logger(_configuration);
         _db = new CarCrawlerDbContext(_logger);
         _adDetails = null!;
         _vehicleHistoryReports = new List<VehicleHistoryReport>();
-        _logger = new Logger();
     }
 
     public void Run()
@@ -65,10 +67,10 @@ internal class App
         var matrixProvider = new GoogleDistanceMatrixProvider(_logger);
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
         var originCoords = new Point(
-            Configuration.Get.GetValue<float>("OriginCoordsLat"),
-            Configuration.Get.GetValue<float>("OriginCoordsLon"));
+            _configuration.GetValue<float>("OriginCoordsLat"),
+            _configuration.GetValue<float>("OriginCoordsLon"));
         var fetcher = new FetchAdDetailsService(
-            Configuration.Get.GetValue<Uri>("OffertUrl"),
+            _configuration.GetValue<Uri>("OffertUrl"),
             distanceMatrixCalculator,
             originCoords);
 
@@ -126,8 +128,8 @@ internal class App
         var spreadsheetsValues = service.Spreadsheets.Values;
         var request = spreadsheetsValues.Update(
             spreadsheetBody,
-            Configuration.Get.GetValue<string>("SpreadsheetId"),
-            Configuration.Get.GetValue<string>("SpreadsheetName"));
+            _configuration.GetValue<string>("SpreadsheetId"),
+            _configuration.GetValue<string>("SpreadsheetName"));
 
         request.ValueInputOption = UpdateRequest.ValueInputOptionEnum.USERENTERED;
         request.IncludeValuesInResponse = true;

@@ -9,14 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="config\**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Configuration\**" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="config\car_crawler.json" />
-    <None Remove="config\google\client_secrets.json" />
-    <None Remove="config\google\maps\client_secrets.json" />
+    <None Remove="Configuration\car_crawler.json" />
+    <None Remove="Configuration\google\client_secrets.json" />
+    <None Remove="Configuration\google\maps\client_secrets.json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using CarCrawler.Formatters;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 
@@ -8,10 +7,13 @@ namespace CarCrawler.Loggers;
 public class Logger : ILogger
 {
     private readonly ILogger<Logger> _logger;
+    private readonly IConfiguration _configuration;
 
-    public Logger()
+    public Logger(IConfiguration configuration)
     {
-        var logLevel = Configuration.Get.GetValue<LogLevel>("Logging:LogLevel:Default");
+        _configuration = configuration;
+
+        var logLevel = _configuration.GetValue<LogLevel>("Logging:LogLevel:Default");
         var loggerFactory = LoggerFactory.Create(builder =>
         {
             builder

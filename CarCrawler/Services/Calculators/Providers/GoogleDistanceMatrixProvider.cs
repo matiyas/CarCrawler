@@ -119,7 +119,7 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 
     private static string GetGoogleMapsApiKey()
     {
-        var jsonString = File.ReadAllText("config/google/maps/client_secrets.json");
+        var jsonString = File.ReadAllText("Configuration/google/maps/client_secrets.json");
         var jsonDocument = JsonDocument.Parse(jsonString);
         var data = jsonDocument.RootElement;
         var key = data.EnumerateObject().First(entry => entry.Name == "private_key").Value.ToString();
