@@ -85,7 +85,7 @@ public class AdListLinksScraperService
         return currentPage;
     }
 
-    private IEnumerable<Uri> GetLinksFromHtmlNodes(IEnumerable<HtmlNode> htmlNodes)
+    private static IEnumerable<Uri> GetLinksFromHtmlNodes(IEnumerable<HtmlNode> htmlNodes)
     {
         var links = htmlNodes.Select(GetLinkFromHtmlNode);
         links = links.Where(link => link != null && link.Host == "www.otomoto.pl");
@@ -93,7 +93,7 @@ public class AdListLinksScraperService
         return links!;
     }
 
-    private Uri? GetLinkFromHtmlNode(HtmlNode htmlNode)
+    private static Uri? GetLinkFromHtmlNode(HtmlNode htmlNode)
     {
         var href = htmlNode.GetAttributeValue("href", null);
         Uri.TryCreate(href, UriKind.Absolute, out Uri? uri);

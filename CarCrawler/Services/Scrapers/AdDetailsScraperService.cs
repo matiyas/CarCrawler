@@ -237,7 +237,7 @@ public class AdDetailsScraperService
         _adDetails.ISOCurrencySymbol = GetAdISOCurrencySymbolFromAdSummaryNode(summaryNode);
     }
 
-    private Dictionary<string, string?> GetParametersDictFromParametersNodes(HtmlNodeCollection parametersNodes)
+    private static Dictionary<string, string?> GetParametersDictFromParametersNodes(HtmlNodeCollection parametersNodes)
     {
         var parameters = parametersNodes.Select(parameter =>
         {
