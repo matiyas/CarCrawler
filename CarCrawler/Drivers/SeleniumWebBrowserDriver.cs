@@ -9,7 +9,7 @@ public class SeleniumWebBrowserDriver : IWebBrowserDriver
 {
     private WebDriver _driver;
     private DriverOptions _options;
-    private IAppLogger _logger;
+    private readonly IAppLogger _logger;
 
     public WebDriver WebDriver => _driver;
 
