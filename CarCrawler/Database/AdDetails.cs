@@ -2,20 +2,20 @@
 
 namespace CarCrawler.Database;
 
+public enum Fuel
+{
+    Petrol = 0,
+    PetrolAndCNG = 1,
+    PetrolAndLPG = 2,
+    Diesel = 3,
+    Electric = 4,
+    Ethanol = 5,
+    Hybrid = 6,
+    Hydrogen = 7
+}
+
 public class AdDetails : BaseEntity
 {
-    public enum Fuel
-    {
-        Petrol = 0,
-        PetrolAndCNG = 1,
-        PetrolAndLPG = 2,
-        Diesel = 3,
-        Electric = 4,
-        Ethanol = 5,
-        Hybrid = 6,
-        Hydrogen = 7
-    }
-
     public int Id { get; set; }
     public string? ExternalId { get; set; }
     public string? Brand { get; set; }
