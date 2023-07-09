@@ -2,7 +2,7 @@
 
 namespace CarCrawler.Services.Generators.Sheets;
 
-internal class ListReportSheetDataGeneratorService
+public class ListReportSheetDataGeneratorService
 {
     private readonly IEntityToSpreadsheetRowConverter _converter;
 

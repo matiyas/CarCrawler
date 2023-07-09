@@ -2,7 +2,7 @@
 
 namespace CarCrawler.Database;
 
-internal class VehicleHistoryReport : BaseEntity
+public class VehicleHistoryReport : BaseEntity
 {
     public int Id { get; set; }
 

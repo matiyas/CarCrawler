@@ -3,7 +3,7 @@ using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Services.Calculators;
 
-internal class DistanceMatrixCalculator : IDistanceMatrixCalculator
+public class DistanceMatrixCalculator : IDistanceMatrixCalculator
 {
     private readonly IDistanceMatrixProvider _provider;
 

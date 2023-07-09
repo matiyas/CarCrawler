@@ -4,7 +4,7 @@ using Google.Apis.Sheets.v4;
 
 namespace CarCrawler.Services.Helpers.Google.Sheets;
 
-internal class GoogleSheetHelper
+public class GoogleSheetHelper
 {
     private static readonly string[] _scopes = { SheetsService.Scope.Spreadsheets };
     private const string ApplicationName = "CarCrawler";

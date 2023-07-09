@@ -5,7 +5,7 @@ using OpenQA.Selenium.Firefox;
 
 namespace CarCrawler.Drivers;
 
-internal class SeleniumWebBrowserDriver : IWebBrowserDriver
+public class SeleniumWebBrowserDriver : IWebBrowserDriver
 {
     private WebDriver _driver;
     private DriverOptions _options;

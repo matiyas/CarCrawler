@@ -1,6 +1,6 @@
 ﻿namespace CarCrawler.Converters;
 
-internal interface IEntityToSpreadsheetRowConverter
+public interface IEntityToSpreadsheetRowConverter
 {
     IList<object> Convert(object entity);
 

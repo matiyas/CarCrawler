@@ -2,7 +2,7 @@
 
 namespace CarCrawler.Models;
 
-internal class DistanceMatrix
+public class DistanceMatrix
 {
     public Point Origin { get; set; }
     public Point Destination { get; set; }

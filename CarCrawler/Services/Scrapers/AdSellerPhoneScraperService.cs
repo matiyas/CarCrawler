@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace CarCrawler.Services.Scrapers;
 
-internal class AdSellerPhoneScraperService
+public class AdSellerPhoneScraperService
 {
     private readonly AdDetails _adDetails;
     private readonly IAppLogger _logger;

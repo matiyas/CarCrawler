@@ -8,10 +8,12 @@ using static CarCrawler.Database.AdDetails;
 
 namespace CarCrawler.Services.Scrapers;
 
-internal class AdDetailsScraperService
+public class AdDetailsScraperService
 {
     private readonly AdDetails _adDetails;
     private readonly Uri _adLink;
+
+    private delegate bool ParserFunc<T>(string arg, out T? res);
 
     public AdDetailsScraperService(Uri adLink)
     {
@@ -128,19 +130,28 @@ internal class AdDetailsScraperService
         return price;
     }
 
-    private static DateOnly? TryParseDateOnly(string? dateString)
+    private static void SetAdDetailsParamIfValid<T>(string? valueString, ParserFunc<T> parser, Action<T> setter)
     {
-        if (string.IsNullOrWhiteSpace(dateString) || !DateOnly.TryParseExact(dateString, "dd/MM/yyyy", out var date))
+        if (!string.IsNullOrWhiteSpace(valueString) && parser(valueString, out T? parsedValue))
         {
-            return null;
+            setter(parsedValue!);
         }
-
-        return date;
     }
 
-    private static Fuel? TryParseFuelType(string? fuelTypeString)
+    private static bool TryParseDateOnly(string dateString, out DateOnly result)
     {
-        return fuelTypeString?.ToLower() switch
+        if (!DateOnly.TryParseExact(dateString, "dd/MM/yyyy", out var date))
+        {
+            return false;
+        }
+        result = date;
+
+        return true;
+    }
+
+    private static bool TryParseFuelType(string fuelTypeString, out Fuel? result)
+    {
+        result = fuelTypeString?.ToLower() switch
         {
             "benzyna" => Fuel.Petrol,
             "benzyna+lpg" => Fuel.PetrolAndLPG,
@@ -152,16 +163,19 @@ internal class AdDetailsScraperService
             "wodór" => Fuel.Hydrogen,
             _ => null
         };
+
+        return result is not null;
     }
 
-    private static uint? TryParseMileageKilometers(string? mileageKilometersString)
+    private static bool TryParseMileageKilometers(string mileageKilometersString, out uint? result)
     {
-        if (string.IsNullOrWhiteSpace(mileageKilometersString)) { return null; }
-
+        result = null;
         mileageKilometersString = Regex.Replace(mileageKilometersString, @"[^\d]", "");
-        if (!uint.TryParse(mileageKilometersString, out var mileageKilometers)) { return null; }
 
-        return mileageKilometers;
+        if (uint.TryParse(mileageKilometersString, out var mileageKilometers))
+            result = mileageKilometers;
+
+        return result is not null;
     }
 
     private void GetDetailsFromDescriptionNode(HtmlNode? descriptionNode)
@@ -169,27 +183,38 @@ internal class AdDetailsScraperService
         _adDetails.Description = descriptionNode?.InnerText?.Trim();
     }
 
-    private void GetDetailsFromParametersNodes(HtmlNodeCollection? parametersNodes)
+    private void GetDetailsFromParametersNodes(HtmlNodeCollection? paramsNodes)
     {
-        if (parametersNodes == null) { return; }
+        if (paramsNodes == null) { return; }
 
-        var parametersDict = GetParametersDictFromParametersNodes(parametersNodes);
+        var paramsDict = GetParametersDictFromParametersNodes(paramsNodes);
+        if (paramsDict is null) { return; }
 
-        parametersDict.TryGetValue("Marka pojazdu", out var brand);
-        parametersDict.TryGetValue("Model pojazdu", out var model);
-        parametersDict.TryGetValue("Rok produkcji", out var year);
-        parametersDict.TryGetValue("Data pierwszej rejestracji w historii pojazdu", out var registrationDate);
-        parametersDict.TryGetValue("Numer rejestracyjny pojazdu", out var registrationNumber);
-        parametersDict.TryGetValue("Rodzaj paliwa", out var fuelType);
-        parametersDict.TryGetValue("Przebieg", out var mileageKilometers);
+        _adDetails.Brand = GetValueFromParamsDict(paramsDict, "Marka pojazdu");
+        _adDetails.Model = GetValueFromParamsDict(paramsDict, "Model pojazdu");
+        _adDetails.Year = GetValueFromParamsDict(paramsDict, "Rok produkcji");
+        _adDetails.RegistrationNumber = GetValueFromParamsDict(paramsDict, "Data pierwszej rejestracji w historii pojazdu");
 
-        _adDetails.Brand = brand;
-        _adDetails.Model = model;
-        _adDetails.Year = year;
-        _adDetails.RegistrationDate = TryParseDateOnly(registrationDate);
-        _adDetails.RegistrationNumber = registrationNumber;
-        _adDetails.FuelType = TryParseFuelType(fuelType);
-        _adDetails.MileageKilometers = TryParseMileageKilometers(mileageKilometers);
+        SetAdDetailsParamIfValid<DateOnly>(
+            GetValueFromParamsDict(paramsDict, "Numer rejestracyjny pojazdu"),
+            TryParseDateOnly,
+            value => _adDetails.RegistrationDate = value);
+
+        SetAdDetailsParamIfValid<Fuel?>(
+            GetValueFromParamsDict(paramsDict, "Rodzaj paliwa"),
+            TryParseFuelType,
+            value => _adDetails.FuelType = value);
+
+        SetAdDetailsParamIfValid<uint?>(
+            GetValueFromParamsDict(paramsDict, "Przebieg"),
+            TryParseMileageKilometers,
+            value => _adDetails.MileageKilometers = value);
+    }
+
+    private static string? GetValueFromParamsDict(Dictionary<string, string?> dict, string key)
+    {
+        dict.TryGetValue(key, out var result);
+        return result;
     }
 
     private void GetDetailsFromPriceNode(HtmlNode? priceNode)

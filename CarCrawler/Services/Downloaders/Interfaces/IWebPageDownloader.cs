@@ -1,6 +1,6 @@
 ﻿namespace CarCrawler.Services.Downloaders.Interfaces;
 
-internal interface IWebPageDownloader
+public interface IWebPageDownloader
 {
     string DownloadPageContent(Uri url, string? xPath);
 }

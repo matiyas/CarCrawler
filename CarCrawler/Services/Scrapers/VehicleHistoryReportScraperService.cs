@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace CarCrawler.Services.Scrapers;
 
-internal class VehicleHistoryReportScraperService
+public class VehicleHistoryReportScraperService
 {
     private readonly string _registrationNumber;
     private readonly DateOnly _dateOfFirstRegistration;

@@ -6,7 +6,7 @@ using System.Web;
 
 namespace CarCrawler.Services.Scrapers;
 
-internal class AdListLinksScraperService
+public class AdListLinksScraperService
 {
     private readonly Uri _adListLink;
     private byte _currentPage = 1;
@@ -30,17 +30,17 @@ internal class AdListLinksScraperService
         }
     }
 
-    internal AdListLinksScraperService(Uri adListLink)
+    public AdListLinksScraperService(Uri adListLink)
     {
         _adListLink = adListLink;
     }
 
-    internal AdListLinksScraperService(Uri adListLink, IAppLogger logger) : this(adListLink)
+    public AdListLinksScraperService(Uri adListLink, IAppLogger logger) : this(adListLink)
     {
         _logger = logger;
     }
 
-    internal IEnumerable<Uri> GetLinksFromSinglePage()
+    public IEnumerable<Uri> GetLinksFromSinglePage()
     {
         var htmlNodes = GetHtmlNodes();
         if (htmlNodes == null)
@@ -51,7 +51,7 @@ internal class AdListLinksScraperService
         return GetLinksFromHtmlNodes(htmlNodes);
     }
 
-    internal IEnumerable<IEnumerable<Uri>> GetLinksFromPages()
+    public IEnumerable<IEnumerable<Uri>> GetLinksFromPages()
     {
         do
         {

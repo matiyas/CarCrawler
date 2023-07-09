@@ -5,7 +5,7 @@ using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Services;
 
-internal class FetchAdDetailsService
+public class FetchAdDetailsService
 {
     private readonly Uri _adsListLink;
     private readonly IDistanceMatrixCalculator _distanceMatrixCalculator;

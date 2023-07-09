@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace CarCrawler.Services.Calculators.Providers;
 
-internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
+public class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 {
     private readonly IAppLogger? _logger;
 

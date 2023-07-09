@@ -1,6 +1,6 @@
 ﻿namespace CarCrawler.Database;
 
-internal class BaseEntity
+public class BaseEntity
 {
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

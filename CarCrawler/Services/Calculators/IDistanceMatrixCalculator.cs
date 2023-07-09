@@ -2,7 +2,7 @@
 
 namespace CarCrawler.Services.Calculators
 {
-    internal interface IDistanceMatrixCalculator
+    public interface IDistanceMatrixCalculator
     {
         DistanceMatrix? Calculate(Point origin, Point destination);
     }

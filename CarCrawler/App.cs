@@ -12,7 +12,7 @@ using NetTopologySuite.Geometries;
 using System.Globalization;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
 
-internal class App
+public class App
 {
     private readonly CarCrawlerDbContext _db;
     private readonly IAppLogger _logger;

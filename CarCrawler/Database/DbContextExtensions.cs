@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CarCrawler.Database;
 
-internal static class DbContextExtensions
+public static class DbContextExtensions
 {
     public static void BulkMerge<T>(this DbContext @this, IEnumerable<T> entities, string primaryKeyName = "Id")
         where T : class

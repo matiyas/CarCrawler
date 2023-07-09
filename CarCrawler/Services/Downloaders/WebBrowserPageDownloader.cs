@@ -3,7 +3,7 @@ using CarCrawler.Services.Downloaders.Interfaces;
 
 namespace CarCrawler.Services.Downloaders;
 
-internal class WebBrowserPageDownloader : IWebPageDownloader
+public class WebBrowserPageDownloader : IWebPageDownloader
 {
     private readonly IWebBrowserDriver _webBrowserDriver;
 

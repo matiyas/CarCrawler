@@ -2,7 +2,7 @@
 
 namespace CarCrawler.Services.Calculators.Providers.Interfaces;
 
-internal interface IDistanceMatrixProvider
+public interface IDistanceMatrixProvider
 {
     Point Origin { get; set; }
     Point Destination { get; set; }

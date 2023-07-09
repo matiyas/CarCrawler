@@ -3,7 +3,7 @@ using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Converters;
 
-internal class AdDetailsToSpreadsheetRowConverter : IEntityToSpreadsheetRowConverter
+public class AdDetailsToSpreadsheetRowConverter : IEntityToSpreadsheetRowConverter
 {
     private readonly IEnumerable<string> _adDetailsColumns = new[]
     {
@@ -36,15 +36,15 @@ internal class AdDetailsToSpreadsheetRowConverter : IEntityToSpreadsheetRowConve
 
     public IEnumerable<string> Columns => _adDetailsColumns.Concat(_vehicleHistoryReportColumns);
 
-    public AdDetailsToSpreadsheetRowConverter ()
-    {}
+    public AdDetailsToSpreadsheetRowConverter()
+    { }
 
     public IList<object> Convert(object entity)
     {
         var historyReport = ((AdDetails)entity).VehicleHistoryReport;
-        var adDetailsRow = 
+        var adDetailsRow =
             _adDetailsColumns.Select(ConvertValue(entity, typeof(AdDetails)));
-        var vehicleHistoryReportRow = 
+        var vehicleHistoryReportRow =
             _vehicleHistoryReportColumns.Select(ConvertValue(historyReport, typeof(VehicleHistoryReport)));
         var row = adDetailsRow.Concat(vehicleHistoryReportRow).ToList();
 

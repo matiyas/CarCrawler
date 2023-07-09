@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace CarCrawler.Database;
 
-internal class CarCrawlerDbContext : DbContext
+public class CarCrawlerDbContext : DbContext
 {
     private readonly IAppLogger? _logger;
 

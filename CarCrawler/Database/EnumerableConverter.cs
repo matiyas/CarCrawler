@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace CarCrawler.Database;
 
-internal class EnumerableConverter : ValueConverter<IEnumerable<string>, string>
+public class EnumerableConverter : ValueConverter<IEnumerable<string>, string>
 {
     public EnumerableConverter() :
         base(ConvertFromEnumerableToString, ConvertFromStringToEnumerable)
