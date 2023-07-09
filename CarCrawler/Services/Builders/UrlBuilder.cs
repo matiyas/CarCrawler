@@ -2,7 +2,7 @@
 
 namespace CarCrawler.Services.Builders;
 
-public class UrlBuilder
+public static class UrlBuilder
 {
     public static string BuildUrl(string baseUrl, Dictionary<string, string> parameters)
     {
