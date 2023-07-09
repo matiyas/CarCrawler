@@ -1,14 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-using MsConfiguration = Microsoft.Extensions.Configuration;
-
 namespace CarCrawler.Configuration;
 
-public class Configuration : IConfiguration
+public class AppConfiguration : IAppConfiguration
 {
-    private readonly MsConfiguration.IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
 
-    public Configuration()
+    public AppConfiguration()
     {
         _configuration =
             new ConfigurationBuilder()

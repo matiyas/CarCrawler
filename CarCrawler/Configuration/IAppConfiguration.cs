@@ -1,6 +1,6 @@
 ﻿namespace CarCrawler.Configuration;
 
-public interface IConfiguration
+public interface IAppConfiguration
 {
     T GetValue<T>(string key);
 }

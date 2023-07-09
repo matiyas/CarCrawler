@@ -7,9 +7,9 @@ namespace CarCrawler.Loggers;
 public class AppLogger : IAppLogger
 {
     private readonly ILogger<AppLogger> _logger;
-    private readonly IConfiguration _configuration;
+    private readonly IAppConfiguration _configuration;
 
-    public AppLogger(IConfiguration configuration)
+    public AppLogger(IAppConfiguration configuration)
     {
         _configuration = configuration;
 

@@ -21,13 +21,13 @@ internal class App
 {
     private readonly CarCrawlerDbContext _db;
     private readonly IAppLogger _logger;
-    private readonly IConfiguration _configuration;
+    private readonly IAppConfiguration _configuration;
     private IEnumerable<AdDetails> _adDetails;
     private IEnumerable<VehicleHistoryReport> _vehicleHistoryReports;
 
     public App()
     {
-        _configuration = new Configuration.Configuration();
+        _configuration = new Configuration.AppConfiguration();
         _logger = new AppLogger(_configuration);
         _db = new CarCrawlerDbContext(_logger);
         _adDetails = null!;
