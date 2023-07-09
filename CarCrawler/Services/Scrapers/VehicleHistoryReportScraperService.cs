@@ -73,16 +73,16 @@ public class VehicleHistoryReportScraperService
         var timelineSummaryBoxEl = _webDriver.FindElement(By.Id("timeline-summary-box"));
 
         _vehicleHistoryReport.FirstRegistrationAbroad =
-            GetDateFromTimelineElement(timelineEl, "PIERWSZA_REJESTRACJA");
+            GetDateFromTimelineEl(timelineEl, "PIERWSZA_REJESTRACJA");
         _vehicleHistoryReport.FirstRegistrationInTheCountry =
-            GetDateFromTimelineElement(timelineEl, "PIERWSZA_REJESTRACJA_W_POLSCE");
+            GetDateFromTimelineEl(timelineEl, "PIERWSZA_REJESTRACJA_W_POLSCE");
         _vehicleHistoryReport.NumberOfOwnersInTheCountry =
-            GetNumberOfOwnersFromTimelineSummaryElement(timelineSummaryBoxEl);
+            GetOwnerCountFromTimelineSummaryEl(timelineSummaryBoxEl);
         _vehicleHistoryReport.NumberOfOwnersInTheCountry =
-            GetNumberOfOwnersFromTimelineSummaryElement(timelineSummaryBoxEl);
+            GetOwnerCountFromTimelineSummaryEl(timelineSummaryBoxEl);
     }
 
-    private static DateOnly? GetDateFromTimelineElement(IWebElement? timelineElement, string labelClass)
+    private static DateOnly? GetDateFromTimelineEl(IWebElement? timelineElement, string labelClass)
     {
         if (timelineElement == null) return null;
         IWebElement? line;
@@ -106,7 +106,7 @@ public class VehicleHistoryReportScraperService
         return date;
     }
 
-    private static int? GetNumberOfOwnersFromTimelineSummaryElement(IWebElement? timelineSummaryElement)
+    private static int? GetOwnerCountFromTimelineSummaryEl(IWebElement? timelineSummaryElement)
     {
         if (timelineSummaryElement == null) return null;
 
