@@ -1,6 +1,6 @@
 ﻿namespace CarCrawler.Loggers;
 
-internal interface ILogger
+internal interface IAppLogger
 {
     void Log(string message);
 }

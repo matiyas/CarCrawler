@@ -15,7 +15,7 @@ internal class VehicleHistoryReportScraperService
     private readonly VehicleHistoryReport _vehicleHistoryReport;
     private readonly Uri _baseSiteUrl = new("https://historiapojazdu.gov.pl/");
     private readonly WebDriver _webDriver;
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
 
     public VehicleHistoryReportScraperService(
         string registrationNumber,
@@ -34,7 +34,7 @@ internal class VehicleHistoryReportScraperService
         string registrationNumber,
         DateOnly dateOfFirstRegistration,
         string vin,
-        ILogger logger) : this(registrationNumber, dateOfFirstRegistration, vin)
+        IAppLogger logger) : this(registrationNumber, dateOfFirstRegistration, vin)
     {
         _logger = logger;
     }

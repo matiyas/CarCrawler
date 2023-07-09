@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging.Console;
 
 namespace CarCrawler.Loggers;
 
-public class Logger : ILogger
+public class AppLogger : IAppLogger
 {
-    private readonly ILogger<Logger> _logger;
+    private readonly ILogger<AppLogger> _logger;
     private readonly IConfiguration _configuration;
 
-    public Logger(IConfiguration configuration)
+    public AppLogger(IConfiguration configuration)
     {
         _configuration = configuration;
 
@@ -23,7 +23,7 @@ public class Logger : ILogger
             builder.SetMinimumLevel(logLevel);
         });
 
-        _logger = loggerFactory.CreateLogger<Logger>();
+        _logger = loggerFactory.CreateLogger<AppLogger>();
     }
 
     public void Log(string message) => _logger.LogInformation(message);

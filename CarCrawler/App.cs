@@ -20,7 +20,7 @@ namespace CarCrawler;
 internal class App
 {
     private readonly CarCrawlerDbContext _db;
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
     private readonly IConfiguration _configuration;
     private IEnumerable<AdDetails> _adDetails;
     private IEnumerable<VehicleHistoryReport> _vehicleHistoryReports;
@@ -28,7 +28,7 @@ internal class App
     public App()
     {
         _configuration = new Configuration.Configuration();
-        _logger = new Logger(_configuration);
+        _logger = new AppLogger(_configuration);
         _db = new CarCrawlerDbContext(_logger);
         _adDetails = null!;
         _vehicleHistoryReports = new List<VehicleHistoryReport>();

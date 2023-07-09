@@ -9,7 +9,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
 {
     private WebDriver _driver;
     private DriverOptions _options;
-    private ILogger _logger;
+    private IAppLogger _logger;
 
     public WebDriver WebDriver => _driver;
 
@@ -18,7 +18,7 @@ internal class SeleniumWebBrowserDriver : IWebBrowserDriver
         InitializeBrowserDriverWithOptions(browser);
     }
 
-    public SeleniumWebBrowserDriver(string browser, ILogger logger) : this(browser)
+    public SeleniumWebBrowserDriver(string browser, IAppLogger logger) : this(browser)
     {
         _logger = logger;
     }

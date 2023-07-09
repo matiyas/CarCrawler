@@ -8,7 +8,7 @@ namespace CarCrawler.Services.Calculators.Providers;
 
 internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
 {
-    private readonly ILogger? _logger;
+    private readonly IAppLogger? _logger;
 
     public Point Origin { get; set; } = new Point(0, 0);
     public Point Destination { get; set; } = new Point(0, 0);
@@ -17,7 +17,7 @@ internal class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
     {
     }
 
-    public GoogleDistanceMatrixProvider(ILogger logger) : this()
+    public GoogleDistanceMatrixProvider(IAppLogger logger) : this()
     {
         _logger = logger;
     }

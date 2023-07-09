@@ -6,7 +6,7 @@ namespace CarCrawler.Database;
 
 internal class CarCrawlerDbContext : DbContext
 {
-    private readonly ILogger? _logger;
+    private readonly IAppLogger? _logger;
 
     public DbSet<AdDetails> AdDetails { get; set; } = null!;
     public DbSet<VehicleHistoryReport> VehicleHistoryReport { get; set; } = null!;
@@ -20,7 +20,7 @@ internal class CarCrawlerDbContext : DbContext
         DbPath = Path.Join(path, "carCrawler.db");
     }
 
-    public CarCrawlerDbContext(ILogger logger) : this()
+    public CarCrawlerDbContext(IAppLogger logger) : this()
     {
         _logger = logger;
     }

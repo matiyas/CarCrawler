@@ -11,7 +11,7 @@ internal class AdListLinksScraperService
     private readonly Uri _adListLink;
     private byte _currentPage = 1;
     private HtmlNode? _htmlDocNode;
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
 
     private Uri AdListLinkWithPage
     {
@@ -35,7 +35,7 @@ internal class AdListLinksScraperService
         _adListLink = adListLink;
     }
 
-    internal AdListLinksScraperService(Uri adListLink, ILogger logger) : this(adListLink)
+    internal AdListLinksScraperService(Uri adListLink, IAppLogger logger) : this(adListLink)
     {
         _logger = logger;
     }

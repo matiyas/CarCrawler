@@ -5,11 +5,11 @@ using System.Text.Json;
 internal class AdSellerPhoneScraperService
 {
     private readonly AdDetails _adDetails;
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
 
     public AdSellerPhoneScraperService(AdDetails adDetails) => _adDetails = adDetails;
 
-    public AdSellerPhoneScraperService(AdDetails adDetails, ILogger logger) : this(adDetails) => _logger = logger;
+    public AdSellerPhoneScraperService(AdDetails adDetails, IAppLogger logger) : this(adDetails) => _logger = logger;
 
     public void GetSellerPhonesFromOfferId(string? offerId)
     {

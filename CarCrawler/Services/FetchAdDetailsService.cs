@@ -10,7 +10,7 @@ internal class FetchAdDetailsService
     private readonly Uri _adsListLink;
     private readonly IDistanceMatrixCalculator _distanceMatrixCalculator;
     private readonly Point _originCoordinates;
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
 
     public FetchAdDetailsService(
         Uri adsListLink,
@@ -26,7 +26,7 @@ internal class FetchAdDetailsService
         Uri adsListLink,
         IDistanceMatrixCalculator distanceMatrixCalculator,
         Point originCoords,
-        ILogger logger) : this(adsListLink, distanceMatrixCalculator, originCoords)
+        IAppLogger logger) : this(adsListLink, distanceMatrixCalculator, originCoords)
     {
         _logger = logger;
     }
