@@ -4,3 +4,4 @@ global using CarCrawler.Configuration;
 
 var app = new App();
 app.Run();
+app.Dispose();

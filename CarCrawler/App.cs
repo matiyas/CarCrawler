@@ -12,11 +12,11 @@ using NetTopologySuite.Geometries;
 using System.Globalization;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
 
-public class App
+public class App : IDisposable
 {
-    private readonly CarCrawlerDbContext _db;
     private readonly IAppLogger _logger;
     private readonly IAppConfiguration _configuration;
+    private CarCrawlerDbContext? _db;
     private IEnumerable<AdDetails> _adDetails;
     private IEnumerable<VehicleHistoryReport> _vehicleHistoryReports;
 
@@ -74,7 +74,7 @@ public class App
 
     private void SaveAdDetailsInDb()
     {
-        var externalIds = _db.AdDetails.Select(e => e.ExternalId);
+        var externalIds = _db!.AdDetails.Select(e => e.ExternalId);
         var newRecords = _adDetails.Where(e => !externalIds.Contains(e.ExternalId));
 
         _db.BulkMerge(_adDetails, "ExternalId");
@@ -82,7 +82,7 @@ public class App
 
     private void SaveVehiclesHistoryReportsInDb()
     {
-        var vins = _db.VehicleHistoryReport.Select(e => e.AdDetailsId);
+        var vins = _db!.VehicleHistoryReport.Select(e => e.AdDetailsId);
         var newRecords = _vehicleHistoryReports.Where(e => !vins.Contains(e.AdDetailsId));
 
         _db.BulkMerge(_vehicleHistoryReports, "AdDetailsId");
@@ -115,7 +115,7 @@ public class App
     {
         var converter = new AdDetailsToSpreadsheetRowConverter();
         var spreadsheetGenerator = new ListReportSheetDataGeneratorService(converter);
-        var spreadsheetData = spreadsheetGenerator.Generate(_db.AdDetails.Include(ad => ad.VehicleHistoryReport));
+        var spreadsheetData = spreadsheetGenerator.Generate(_db!.AdDetails.Include(ad => ad.VehicleHistoryReport));
 
         var spreadsheetBody = new ValueRange() { Values = spreadsheetData };
         var googleSheetHelper = new GoogleSheetHelper();
@@ -136,11 +136,27 @@ public class App
 
     private IEnumerable<AdDetails> GetAdDetailsAbleToSearchHistory()
     {
-        return from details in _db.AdDetails
+        return from details in _db!.AdDetails
                where
                    details.VIN != null &&
                    details.RegistrationDate != null &&
                    details.RegistrationNumber != null
                select details;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        // Resources have already been released. There is no need to call the finalizer.
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposing) return;
+        if (_db is null) return;
+
+        _db.Dispose();
+        _db = null;
     }
 }
