@@ -82,7 +82,7 @@ public class App : IDisposable
 
     private void SaveVehiclesHistoryReportsInDb()
     {
-        var vins = _db!.VehicleHistoryReport.Select(e => e.AdDetailsId);
+        var vins = _db!.VehicleHistoryReports.Select(e => e.AdDetailsId);
         var newRecords = _vehicleHistoryReports.Where(e => !vins.Contains(e.AdDetailsId));
 
         _db.BulkMerge(_vehicleHistoryReports, "AdDetailsId");

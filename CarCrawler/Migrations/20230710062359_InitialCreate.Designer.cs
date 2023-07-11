@@ -12,7 +12,7 @@ using NetTopologySuite.Geometries;
 namespace CarCrawler.Migrations
 {
     [DbContext(typeof(CarCrawlerDbContext))]
-    [Migration("20230507053535_InitialCreate")]
+    [Migration("20230710062359_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,54 @@ namespace CarCrawler.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AdDetails");
+                });
+
+            modelBuilder.Entity("CarCrawler.Database.VehicleHistoryReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AdDetailsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("FirstRegistrationAbroad")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("FirstRegistrationInTheCountry")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("NumberOfOwnersInTheCountry")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdDetailsId")
+                        .IsUnique();
+
+                    b.ToTable("VehicleHistoryReports");
+                });
+
+            modelBuilder.Entity("CarCrawler.Database.VehicleHistoryReport", b =>
+                {
+                    b.HasOne("CarCrawler.Database.AdDetails", "AdDetails")
+                        .WithOne("VehicleHistoryReport")
+                        .HasForeignKey("CarCrawler.Database.VehicleHistoryReport", "AdDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdDetails");
+                });
+
+            modelBuilder.Entity("CarCrawler.Database.AdDetails", b =>
+                {
+                    b.Navigation("VehicleHistoryReport");
                 });
 #pragma warning restore 612, 618
         }

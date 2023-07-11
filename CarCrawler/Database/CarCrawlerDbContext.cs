@@ -9,7 +9,7 @@ public class CarCrawlerDbContext : DbContext
     private readonly IAppLogger? _logger;
 
     public DbSet<AdDetails> AdDetails { get; set; } = null!;
-    public DbSet<VehicleHistoryReport> VehicleHistoryReport { get; set; } = null!;
+    public DbSet<VehicleHistoryReport> VehicleHistoryReports { get; set; } = null!;
 
     public string DbPath { get; }
 

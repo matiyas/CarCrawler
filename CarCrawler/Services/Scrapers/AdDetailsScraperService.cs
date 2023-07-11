@@ -192,10 +192,10 @@ public class AdDetailsScraperService
         _adDetails.Brand = GetValueFromParamsDict(paramsDict, "Marka pojazdu");
         _adDetails.Model = GetValueFromParamsDict(paramsDict, "Model pojazdu");
         _adDetails.Year = GetValueFromParamsDict(paramsDict, "Rok produkcji");
-        _adDetails.RegistrationNumber = GetValueFromParamsDict(paramsDict, "Data pierwszej rejestracji w historii pojazdu");
+        _adDetails.RegistrationNumber = GetValueFromParamsDict(paramsDict, "Numer rejestracyjny pojazdu");
 
         SetAdDetailsParamIfValid<DateOnly>(
-            GetValueFromParamsDict(paramsDict, "Numer rejestracyjny pojazdu"),
+            GetValueFromParamsDict(paramsDict, "Data pierwszej rejestracji w historii pojazdu"),
             TryParseDateOnly,
             value => _adDetails.RegistrationDate = value);
 

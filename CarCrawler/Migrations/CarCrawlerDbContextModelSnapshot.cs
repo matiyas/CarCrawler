@@ -3,7 +3,6 @@ using System;
 using CarCrawler.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
@@ -12,10 +11,9 @@ using NetTopologySuite.Geometries;
 namespace CarCrawler.Migrations
 {
     [DbContext(typeof(CarCrawlerDbContext))]
-    [Migration("20230611185108_CreateVehicleHistoryReport")]
-    partial class CreateVehicleHistoryReport
+    partial class CarCrawlerDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.16");
@@ -120,7 +118,7 @@ namespace CarCrawler.Migrations
                     b.HasIndex("AdDetailsId")
                         .IsUnique();
 
-                    b.ToTable("VehicleHistoryReport");
+                    b.ToTable("VehicleHistoryReports");
                 });
 
             modelBuilder.Entity("CarCrawler.Database.VehicleHistoryReport", b =>
