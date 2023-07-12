@@ -1,16 +1,15 @@
-﻿using CarCrawler.Converters;
+﻿using CarCrawler.Calculators;
+using CarCrawler.Converters;
 using CarCrawler.Database;
 using CarCrawler.Services;
-using CarCrawler.Services.Calculators;
-using CarCrawler.Services.Calculators.Providers;
-using CarCrawler.Services.Generators.Sheets;
-using CarCrawler.Services.Helpers.Google.Sheets;
-using CarCrawler.Services.Scrapers;
+using CarCrawler.Utils;
 using Google.Apis.Sheets.v4.Data;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using System.Globalization;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
+
+namespace CarCrawler;
 
 public class App : IDisposable
 {
@@ -59,7 +58,7 @@ public class App : IDisposable
 
     private void FetchAdDetails()
     {
-        var matrixProvider = new GoogleDistanceMatrixProvider(_logger);
+        var matrixProvider = new GoogleDistanceMatrixCalculatorProvider(_logger);
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
         var originCoords = new Point(
             _configuration.GetValue<float>("OriginCoordsLat"),

@@ -1,5 +1,4 @@
-﻿using CarCrawler.Database;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Converters;
 

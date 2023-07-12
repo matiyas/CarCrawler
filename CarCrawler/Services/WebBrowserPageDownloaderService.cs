@@ -1,13 +1,12 @@
-﻿using CarCrawler.Drivers.Interfaces;
-using CarCrawler.Services.Downloaders.Interfaces;
+﻿using CarCrawler.WebDrivers;
 
-namespace CarCrawler.Services.Downloaders;
+namespace CarCrawler.Services;
 
-public class WebBrowserPageDownloader : IWebPageDownloader
+public class WebBrowserPageDownloaderService : IWebPageDownloaderService
 {
     private readonly IWebBrowserDriver _webBrowserDriver;
 
-    public WebBrowserPageDownloader(IWebBrowserDriver webBrowserDriver)
+    public WebBrowserPageDownloaderService(IWebBrowserDriver webBrowserDriver)
     {
         _webBrowserDriver = webBrowserDriver;
     }

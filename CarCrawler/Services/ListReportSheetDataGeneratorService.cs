@@ -1,6 +1,6 @@
 ﻿using CarCrawler.Converters;
 
-namespace CarCrawler.Services.Generators.Sheets;
+namespace CarCrawler.Services;
 
 public class ListReportSheetDataGeneratorService
 {

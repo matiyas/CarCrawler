@@ -1,8 +1,8 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace CarCrawler.Services.Calculators.Providers.Interfaces;
+namespace CarCrawler.Calculators;
 
-public interface IDistanceMatrixProvider
+public interface IDistanceMatrixCalculatorProvider
 {
     Point Origin { get; set; }
     Point Destination { get; set; }

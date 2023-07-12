@@ -1,13 +1,12 @@
-﻿using CarCrawler.Services.Calculators.Providers.Interfaces;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 
-namespace CarCrawler.Services.Calculators;
+namespace CarCrawler.Calculators;
 
 public class DistanceMatrixCalculator : IDistanceMatrixCalculator
 {
-    private readonly IDistanceMatrixProvider _provider;
+    private readonly IDistanceMatrixCalculatorProvider _provider;
 
-    public DistanceMatrixCalculator(IDistanceMatrixProvider provider)
+    public DistanceMatrixCalculator(IDistanceMatrixCalculatorProvider provider)
     {
         _provider = provider;
     }

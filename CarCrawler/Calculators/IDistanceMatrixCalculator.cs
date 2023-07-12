@@ -1,6 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace CarCrawler.Services.Calculators
+namespace CarCrawler.Calculators
 {
     public interface IDistanceMatrixCalculator
     {

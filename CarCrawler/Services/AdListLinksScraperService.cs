@@ -1,10 +1,9 @@
-﻿using CarCrawler.Drivers;
-using CarCrawler.Services.Downloaders;
+﻿using CarCrawler.WebDrivers;
 using HtmlAgilityPack;
 using System.Data;
 using System.Web;
 
-namespace CarCrawler.Services.Scrapers;
+namespace CarCrawler.Services;
 
 public class AdListLinksScraperService
 {
@@ -104,7 +103,7 @@ public class AdListLinksScraperService
     private HtmlNode GetHtmlDocNodeForCurrentPage()
     {
         var webDriver = new SeleniumWebBrowserDriver("chrome");
-        var webPageDownloader = new WebBrowserPageDownloader(webDriver);
+        var webPageDownloader = new WebBrowserPageDownloaderService(webDriver);
         var webContent = webPageDownloader.DownloadPageContent(AdListLinkWithPage, @"//main/..");
         var htmlDocument = new HtmlDocument();
         htmlDocument.LoadHtml(webContent);

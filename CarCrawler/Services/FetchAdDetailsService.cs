@@ -1,6 +1,4 @@
-﻿using CarCrawler.Database;
-using CarCrawler.Services.Calculators;
-using CarCrawler.Services.Scrapers;
+﻿using CarCrawler.Calculators;
 using NetTopologySuite.Geometries;
 
 namespace CarCrawler.Services;

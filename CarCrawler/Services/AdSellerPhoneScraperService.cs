@@ -1,7 +1,6 @@
-﻿using CarCrawler.Database;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace CarCrawler.Services.Scrapers;
+namespace CarCrawler.Services;
 
 public class AdSellerPhoneScraperService
 {

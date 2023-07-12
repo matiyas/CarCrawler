@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 
-namespace CarCrawler.Loggers;
+namespace CarCrawler.Configuration;
 
 public class AppLogger : IAppLogger
 {

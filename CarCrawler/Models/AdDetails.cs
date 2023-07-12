@@ -1,6 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace CarCrawler.Database;
+namespace CarCrawler.Models;
 
 public enum Fuel
 {

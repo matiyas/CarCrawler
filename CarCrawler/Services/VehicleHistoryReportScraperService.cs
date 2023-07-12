@@ -1,11 +1,10 @@
-﻿using CarCrawler.Database;
-using CarCrawler.Drivers;
+﻿using CarCrawler.WebDrivers;
 using OpenQA.Selenium;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace CarCrawler.Services.Scrapers;
+namespace CarCrawler.Services;
 
 public class VehicleHistoryReportScraperService
 {

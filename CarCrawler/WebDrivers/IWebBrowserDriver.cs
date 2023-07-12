@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 
-namespace CarCrawler.Drivers.Interfaces;
+namespace CarCrawler.WebDrivers;
 
 public interface IWebBrowserDriver
 {

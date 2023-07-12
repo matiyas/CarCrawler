@@ -1,12 +1,11 @@
-﻿using CarCrawler.Database;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using ISO._4217;
 using NetTopologySuite.Geometries;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using static CarCrawler.Database.AdDetails;
+using static CarCrawler.Models.AdDetails;
 
-namespace CarCrawler.Services.Scrapers;
+namespace CarCrawler.Services;
 
 public class AdDetailsScraperService
 {

@@ -1,7 +1,15 @@
 ﻿global using CarCrawler.Models;
-global using CarCrawler.Loggers;
 global using CarCrawler.Configuration;
 
-var app = new App();
-app.Run();
-app.Dispose();
+namespace CarCrawler;
+
+public class Program
+{
+    private static void Main()
+    {
+        var app = new App();
+        app.Run();
+
+        app.Dispose();
+    }
+}

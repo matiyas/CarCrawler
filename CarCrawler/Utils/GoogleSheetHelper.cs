@@ -2,7 +2,7 @@
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 
-namespace CarCrawler.Services.Helpers.Google.Sheets;
+namespace CarCrawler.Utils;
 
 public class GoogleSheetHelper
 {

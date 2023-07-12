@@ -1,9 +1,8 @@
-﻿using CarCrawler.Drivers.Interfaces;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 
-namespace CarCrawler.Drivers;
+namespace CarCrawler.WebDrivers;
 
 public class SeleniumWebBrowserDriver : IWebBrowserDriver
 {

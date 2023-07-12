@@ -1,4 +1,4 @@
-﻿namespace CarCrawler.Database;
+﻿namespace CarCrawler.Models;
 
 public class BaseEntity
 {

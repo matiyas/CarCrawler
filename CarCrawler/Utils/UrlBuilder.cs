@@ -1,12 +1,12 @@
 ﻿using System.Text;
 
-namespace CarCrawler.Services.Builders;
+namespace CarCrawler.Utils;
 
 public static class UrlBuilder
 {
     public static string BuildUrl(string baseUrl, Dictionary<string, string> parameters)
     {
-        StringBuilder builder = new StringBuilder(baseUrl);
+        StringBuilder builder = new(baseUrl);
 
         if (parameters.Count == 0)
         {

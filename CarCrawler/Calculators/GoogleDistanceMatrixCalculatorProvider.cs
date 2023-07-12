@@ -1,23 +1,22 @@
-﻿using CarCrawler.Services.Builders;
-using CarCrawler.Services.Calculators.Providers.Interfaces;
+﻿using CarCrawler.Utils;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
 using System.Text.Json;
 
-namespace CarCrawler.Services.Calculators.Providers;
+namespace CarCrawler.Calculators;
 
-public class GoogleDistanceMatrixProvider : IDistanceMatrixProvider
+public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorProvider
 {
     private readonly IAppLogger? _logger;
 
     public Point Origin { get; set; } = new Point(0, 0);
     public Point Destination { get; set; } = new Point(0, 0);
 
-    public GoogleDistanceMatrixProvider()
+    public GoogleDistanceMatrixCalculatorProvider()
     {
     }
 
-    public GoogleDistanceMatrixProvider(IAppLogger logger) : this()
+    public GoogleDistanceMatrixCalculatorProvider(IAppLogger logger) : this()
     {
         _logger = logger;
     }

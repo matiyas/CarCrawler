@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CarCrawler.Database;
+namespace CarCrawler.Models;
 
 public class VehicleHistoryReport : BaseEntity
 {
