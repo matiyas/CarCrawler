@@ -1,37 +1,23 @@
-﻿using CarCrawler.Calculators;
-using NetTopologySuite.Geometries;
-
-namespace CarCrawler.Services;
+﻿namespace CarCrawler.Services;
 
 public class FetchAdDetailsService
 {
-    private readonly Uri _adsListLink;
-    private readonly IDistanceMatrixCalculator _distanceMatrixCalculator;
-    private readonly Point _originCoordinates;
-    private readonly IAppLogger _logger;
+    private readonly Uri _srcUri;
+    private readonly IAppLogger? _logger;
 
-    public FetchAdDetailsService(
-        Uri adsListLink,
-        IDistanceMatrixCalculator distanceMatrixCalculator,
-        Point originCoords)
+    public FetchAdDetailsService(Uri srcUri)
     {
-        _adsListLink = adsListLink;
-        _distanceMatrixCalculator = distanceMatrixCalculator;
-        _originCoordinates = originCoords;
+        _srcUri = srcUri;
     }
 
-    public FetchAdDetailsService(
-        Uri adsListLink,
-        IDistanceMatrixCalculator distanceMatrixCalculator,
-        Point originCoords,
-        IAppLogger logger) : this(adsListLink, distanceMatrixCalculator, originCoords)
+    public FetchAdDetailsService(Uri srcUri, IAppLogger logger) : this(srcUri)
     {
         _logger = logger;
     }
 
-    public IEnumerable<AdDetails> Execute()
+    public IEnumerable<AdDetails> Fetch()
     {
-        var adListLinksScraperService = new AdListLinksScraperService(_adsListLink);
+        var adListLinksScraperService = new AdListLinksScraperService(_srcUri);
 
         foreach (var pageLinks in adListLinksScraperService.GetLinksFromPages())
         {
@@ -44,22 +30,8 @@ public class FetchAdDetailsService
                 var newAdDetails = new AdDetailsScraperService(pageLinksArray[i]).Call();
                 if (newAdDetails == null) continue;
 
-                CalculateDistanceFromSeller(newAdDetails);
-
                 yield return newAdDetails!;
             }
         }
-    }
-
-    private void CalculateDistanceFromSeller(AdDetails? newAdDetails)
-    {
-        var sellerCoordinates = newAdDetails?.SellerCoordinates;
-        if (sellerCoordinates == null) return;
-
-        var distanceMatrix = _distanceMatrixCalculator.Calculate(_originCoordinates, sellerCoordinates);
-        if (distanceMatrix == null) return;
-
-        newAdDetails!.TravelDuration = distanceMatrix.Duration;
-        newAdDetails!.TravelDistance = distanceMatrix.DistanceMeters;
     }
 }

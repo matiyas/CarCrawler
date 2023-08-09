@@ -11,8 +11,10 @@ public class DistanceMatrixCalculator : IDistanceMatrixCalculator
         _provider = provider;
     }
 
-    public DistanceMatrix? Calculate(Point origin, Point destination)
+    public DistanceMatrix? Calculate(Point? origin, Point? destination)
     {
+        if (origin is null || destination is null) return null;
+
         _provider.Origin = origin;
         _provider.Destination = destination;
 

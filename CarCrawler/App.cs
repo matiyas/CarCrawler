@@ -33,6 +33,7 @@ public class App : IDisposable
         SetCultureInfo();
         PrintLogo();
         FetchAdDetails();
+        SetDistanceFromSeller();
         SaveAdDetailsInDb();
         FetchVehiclesHistory();
         SaveVehiclesHistoryReportsInDb();
@@ -58,17 +59,26 @@ public class App : IDisposable
 
     private void FetchAdDetails()
     {
+        var fetcher = new FetchAdDetailsService(_configuration.GetValue<Uri>("OffertUrl"), _logger);
+        _adDetails = fetcher.Fetch();
+    }
+
+    private void SetDistanceFromSeller()
+    {
         var matrixProvider = new GoogleDistanceMatrixCalculatorProvider(_logger);
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
-        var originCoords = new Point(
-            _configuration.GetValue<float>("OriginCoordsLat"),
-            _configuration.GetValue<float>("OriginCoordsLon"));
-        var fetcher = new FetchAdDetailsService(
-            _configuration.GetValue<Uri>("OffertUrl"),
-            distanceMatrixCalculator,
-            originCoords);
+        var originCoordsLat = _configuration.GetValue<float>("OriginCoordsLat");
+        var originCoordsLon = _configuration.GetValue<float>("OriginCoordsLon");
+        var originCoords = new Point(originCoordsLat, originCoordsLon);
 
-        _adDetails = fetcher.Execute();
+        foreach (var adDetails in _adDetails)
+        {
+            var dstCoords = adDetails?.SellerCoordinates;
+            var distanceMatrix = distanceMatrixCalculator.Calculate(originCoords, dstCoords);
+
+            adDetails!.TravelDuration = distanceMatrix?.Duration;
+            adDetails!.TravelDistance = distanceMatrix?.DistanceMeters;
+        }
     }
 
     private void SaveAdDetailsInDb()
@@ -76,7 +86,7 @@ public class App : IDisposable
         var externalIds = _db!.AdDetails.Select(e => e.ExternalId);
         var newRecords = _adDetails.Where(e => !externalIds.Contains(e.ExternalId));
 
-        _db.BulkMerge(_adDetails, "ExternalId");
+        _db.BulkMerge(newRecords, "ExternalId");
     }
 
     private void SaveVehiclesHistoryReportsInDb()
@@ -84,7 +94,7 @@ public class App : IDisposable
         var vins = _db!.VehicleHistoryReports.Select(e => e.AdDetailsId);
         var newRecords = _vehicleHistoryReports.Where(e => !vins.Contains(e.AdDetailsId));
 
-        _db.BulkMerge(_vehicleHistoryReports, "AdDetailsId");
+        _db.BulkMerge(newRecords, "AdDetailsId");
     }
 
     private void FetchVehiclesHistory()
