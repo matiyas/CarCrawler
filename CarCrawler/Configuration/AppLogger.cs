@@ -1,6 +1,7 @@
 ﻿using CarCrawler.Formatters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using AppLogger;
 
 namespace CarCrawler.Configuration;
 

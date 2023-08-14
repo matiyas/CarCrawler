@@ -1,4 +1,7 @@
-﻿namespace CarCrawler.Services;
+﻿using AdDetailsFetcher.Models;
+using AppLogger;
+
+namespace AdDetailsFetcher.Services;
 
 public class FetchAdDetailsService
 {

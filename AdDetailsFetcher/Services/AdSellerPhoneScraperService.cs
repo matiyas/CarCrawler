@@ -1,11 +1,13 @@
 ﻿using System.Text.Json;
+using AdDetailsFetcher.Models;
+using AppLogger;
 
-namespace CarCrawler.Services;
+namespace AdDetailsFetcher.Services;
 
 public class AdSellerPhoneScraperService
 {
     private readonly AdDetails _adDetails;
-    private readonly IAppLogger _logger;
+    private readonly IAppLogger? _logger;
 
     public AdSellerPhoneScraperService(AdDetails adDetails) => _adDetails = adDetails;
 

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace CarCrawler.Utils;
+namespace AdDetailsFetcher.Utils;
 
 public static class UrlBuilder
 {

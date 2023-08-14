@@ -1,4 +1,6 @@
-﻿using CarCrawler.Calculators;
+﻿using AdDetailsFetcher.Calculators;
+using AdDetailsFetcher.Services;
+using VehicleHistoryReportFetcher.Services;
 using CarCrawler.Converters;
 using CarCrawler.Database;
 using CarCrawler.Services;
@@ -7,6 +9,7 @@ using Google.Apis.Sheets.v4.Data;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using System.Globalization;
+using AppLogger;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
 
 namespace CarCrawler;
@@ -22,7 +25,7 @@ public class App : IDisposable
     public App()
     {
         _configuration = new AppConfiguration();
-        _logger = new AppLogger(_configuration);
+        _logger = new Configuration.AppLogger(_configuration);
         _db = new CarCrawlerDbContext(_logger);
         _adDetails = null!;
         _vehicleHistoryReports = new List<VehicleHistoryReport>();
@@ -60,7 +63,7 @@ public class App : IDisposable
     private void FetchAdDetails()
     {
         var fetcher = new FetchAdDetailsService(_configuration.GetValue<Uri>("OffertUrl"), _logger);
-        _adDetails = fetcher.Fetch();
+        _adDetails = fetcher.Fetch().Select(AddDetailsConverter.Convert);
     }
 
     private void SetDistanceFromSeller()
@@ -111,7 +114,7 @@ public class App : IDisposable
             var registrationNumber = adDetailEntry.RegistrationNumber!;
             var registrationDate = adDetailEntry.RegistrationDate!;
             var scraper = new VehicleHistoryReportScraperService(registrationNumber, (DateOnly)registrationDate, vin);
-            var report = scraper.GetReport();
+            var report = VehicleHistoryReportConverter.Convert(scraper.GetReport());
             report.AdDetailsId = adDetailEntry.Id;
 
             _vehicleHistoryReports = _vehicleHistoryReports.Append(report);

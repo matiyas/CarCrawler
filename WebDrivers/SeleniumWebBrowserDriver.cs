@@ -1,18 +1,22 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using AppLogger;
 
-namespace CarCrawler.WebDrivers;
+namespace WebDrivers;
 
 public class SeleniumWebBrowserDriver : IWebBrowserDriver
 {
     private WebDriver _driver;
-    private DriverOptions _options;
-    private readonly IAppLogger _logger;
+    private DriverOptions? _options;
+    private readonly IAppLogger? _logger;
 
     public WebDriver WebDriver => _driver;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     public SeleniumWebBrowserDriver(string browser)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
         InitializeBrowserDriverWithOptions(browser);
     }
@@ -24,6 +28,12 @@ public class SeleniumWebBrowserDriver : IWebBrowserDriver
 
     public void WaitForElement(Uri url, string? xPath, Action<IWebElement> action)
     {
+        if (_driver is null)
+        {
+            _logger?.Log("Driver has not been configured");
+            return;
+        }
+
         xPath ??= "//";
 
         ExecuteActionWithWebDriver(url, () =>
@@ -35,6 +45,12 @@ public class SeleniumWebBrowserDriver : IWebBrowserDriver
 
     private void ExecuteActionWithWebDriver(Uri url, Action action)
     {
+        if (_driver is null)
+        {
+            _logger?.Log("Driver has not been configured");
+            return;
+        }
+
         try
         {
             _driver.Url = url.ToString();
@@ -43,7 +59,7 @@ public class SeleniumWebBrowserDriver : IWebBrowserDriver
         }
         catch (Exception ex)
         {
-            _logger.Log(ex.ToString());
+            _logger?.Log(ex.ToString());
         }
         finally
         {

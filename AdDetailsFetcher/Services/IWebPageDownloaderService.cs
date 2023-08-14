@@ -1,4 +1,4 @@
-﻿namespace CarCrawler.Services;
+﻿namespace AdDetailsFetcher.Services;
 
 public interface IWebPageDownloaderService
 {

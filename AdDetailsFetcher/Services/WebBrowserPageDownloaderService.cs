@@ -1,6 +1,6 @@
-﻿using CarCrawler.WebDrivers;
+﻿using WebDrivers;
 
-namespace CarCrawler.Services;
+namespace AdDetailsFetcher.Services;
 
 public class WebBrowserPageDownloaderService : IWebPageDownloaderService
 {

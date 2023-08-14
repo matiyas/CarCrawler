@@ -1,9 +1,11 @@
-﻿using CarCrawler.Utils;
+﻿using AdDetailsFetcher.Utils;
+using AdDetailsFetcher.Models;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
 using System.Text.Json;
+using AppLogger;
 
-namespace CarCrawler.Calculators;
+namespace AdDetailsFetcher.Calculators;
 
 public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorProvider
 {

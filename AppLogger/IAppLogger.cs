@@ -1,4 +1,4 @@
-﻿namespace CarCrawler.Configuration;
+﻿namespace AppLogger;
 
 public interface IAppLogger
 {

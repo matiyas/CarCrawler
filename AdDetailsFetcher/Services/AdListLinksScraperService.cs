@@ -1,16 +1,17 @@
-﻿using CarCrawler.WebDrivers;
+﻿using WebDrivers;
 using HtmlAgilityPack;
 using System.Data;
 using System.Web;
+using AppLogger;
 
-namespace CarCrawler.Services;
+namespace AdDetailsFetcher.Services;
 
 public class AdListLinksScraperService
 {
     private readonly Uri _adListLink;
     private byte _currentPage = 1;
     private HtmlNode? _htmlDocNode;
-    private readonly IAppLogger _logger;
+    private readonly IAppLogger? _logger;
 
     private Uri AdListLinkWithPage
     {

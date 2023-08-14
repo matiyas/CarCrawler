@@ -3,9 +3,9 @@ using ISO._4217;
 using NetTopologySuite.Geometries;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using static CarCrawler.Models.AdDetails;
+using AdDetailsFetcher.Models;
 
-namespace CarCrawler.Services;
+namespace AdDetailsFetcher.Services;
 
 public class AdDetailsScraperService
 {
@@ -71,7 +71,7 @@ public class AdDetailsScraperService
         var adIdNode = htmlDocNode.SelectSingleNode(adIdNodeXPath);
         var id = adIdNode?.InnerText?.Trim();
 
-        _adDetails.ExternalId = id;
+        _adDetails.Id = id;
     }
 
     private void GetSellerCoordinatesFromHtmlDocNode(HtmlNode htmlDocNode)

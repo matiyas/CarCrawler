@@ -1,6 +1,7 @@
 ﻿using NetTopologySuite.Geometries;
+using AdDetailsFetcher.Models;
 
-namespace CarCrawler.Calculators;
+namespace AdDetailsFetcher.Calculators;
 
 public interface IDistanceMatrixCalculatorProvider
 {

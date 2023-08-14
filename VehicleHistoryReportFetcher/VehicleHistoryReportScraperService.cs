@@ -1,10 +1,12 @@
-﻿using CarCrawler.WebDrivers;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using AppLogger;
+using VehicleHistoryReportFetcher.Models;
+using WebDrivers;
 
-namespace CarCrawler.Services;
+namespace VehicleHistoryReportFetcher.Services;
 
 public class VehicleHistoryReportScraperService
 {
@@ -14,7 +16,7 @@ public class VehicleHistoryReportScraperService
     private readonly VehicleHistoryReport _vehicleHistoryReport;
     private readonly Uri _baseSiteUrl = new("https://historiapojazdu.gov.pl/");
     private readonly WebDriver _webDriver;
-    private readonly IAppLogger _logger;
+    private readonly IAppLogger? _logger;
 
     public VehicleHistoryReportScraperService(
         string registrationNumber,
