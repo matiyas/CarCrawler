@@ -1,8 +1,8 @@
-﻿using WebDrivers;
+﻿using AppLogger;
 using HtmlAgilityPack;
 using System.Data;
 using System.Web;
-using AppLogger;
+using WebDrivers;
 
 namespace AdDetailsFetcher.Services;
 

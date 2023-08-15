@@ -1,5 +1,5 @@
-﻿global using CarCrawler.Models;
-global using CarCrawler.Configuration;
+﻿global using CarCrawler.Configuration;
+global using CarCrawler.Models;
 
 namespace CarCrawler;
 

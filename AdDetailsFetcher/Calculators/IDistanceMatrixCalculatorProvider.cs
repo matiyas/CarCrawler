@@ -1,5 +1,5 @@
-﻿using NetTopologySuite.Geometries;
-using AdDetailsFetcher.Models;
+﻿using AdDetailsFetcher.Models;
+using NetTopologySuite.Geometries;
 
 namespace AdDetailsFetcher.Calculators;
 

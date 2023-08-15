@@ -1,6 +1,6 @@
 ﻿using AdDetailsFetcher.Calculators;
 using AdDetailsFetcher.Services;
-using VehicleHistoryReportFetcher.Services;
+using AppLogger;
 using CarCrawler.Converters;
 using CarCrawler.Database;
 using CarCrawler.Services;
@@ -9,7 +9,7 @@ using Google.Apis.Sheets.v4.Data;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using System.Globalization;
-using AppLogger;
+using VehicleHistoryReportFetcher.Services;
 using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource;
 
 namespace CarCrawler;

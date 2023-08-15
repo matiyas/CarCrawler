@@ -1,8 +1,8 @@
-﻿using OpenQA.Selenium;
+﻿using AppLogger;
+using OpenQA.Selenium;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using AppLogger;
 using VehicleHistoryReportFetcher.Models;
 using WebDrivers;
 

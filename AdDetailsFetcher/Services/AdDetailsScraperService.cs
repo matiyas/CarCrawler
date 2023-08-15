@@ -1,9 +1,9 @@
-﻿using HtmlAgilityPack;
+﻿using AdDetailsFetcher.Models;
+using HtmlAgilityPack;
 using ISO._4217;
 using NetTopologySuite.Geometries;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using AdDetailsFetcher.Models;
 
 namespace AdDetailsFetcher.Services;
 

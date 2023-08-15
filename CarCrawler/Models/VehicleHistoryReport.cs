@@ -8,6 +8,7 @@ public class VehicleHistoryReport : BaseEntity
 
     [ForeignKey("AdDetails")]
     public int AdDetailsId { get; set; }
+
     public int? NumberOfOwnersInTheCountry { get; set; }
     public DateOnly? FirstRegistrationAbroad { get; set; }
     public DateOnly? FirstRegistrationInTheCountry { get; set; }

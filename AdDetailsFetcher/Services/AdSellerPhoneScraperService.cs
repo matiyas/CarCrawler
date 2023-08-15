@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
-using AdDetailsFetcher.Models;
+﻿using AdDetailsFetcher.Models;
 using AppLogger;
+using System.Text.Json;
 
 namespace AdDetailsFetcher.Services;
 
