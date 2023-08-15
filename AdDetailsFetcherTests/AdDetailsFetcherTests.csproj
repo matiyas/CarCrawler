@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,10 +8,26 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
+  
+    <ItemGroup>
+    <Content Include="Configuration\**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>  
+
+  <ItemGroup>
+    <None Remove="Configuration\google\maps\client_secrets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Configuration\google\maps\client_secrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="Moq" Version="4.20.69" />
+    <PackageReference Include="RichardSzalay.MockHttp" Version="6.0.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -25,17 +25,13 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
 
     public DistanceMatrix? GetDistanceMatrix()
     {
-        var json = GetDistanceMatrixResponsJson();
-
-        if (json == null)
-        {
-            return null;
-        }
+        var json = GetDistanceMatrixResponseJson();
+        if (json is null) return null;
 
         var distanceMeters = json.SelectToken("rows[0].elements[0].distance.value")?.Value<int>();
         var durationMinutes = json.SelectToken("rows[0].elements[0].duration.value")?.Value<int>();
 
-        TimeSpan? duration = durationMinutes == null ? null : new TimeSpan(0, 0, durationMinutes.Value);
+        TimeSpan? duration = durationMinutes is null ? null : new TimeSpan(0, 0, durationMinutes.Value);
         var distanceMatrix = new DistanceMatrix
         {
             Origin = Origin,
@@ -47,13 +43,10 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
         return distanceMatrix;
     }
 
-    private JObject? GetDistanceMatrixResponsJson()
+    private JObject? GetDistanceMatrixResponseJson()
     {
         var responseBody = GetDistanceMatrixResponseBody();
-        if (responseBody == null)
-        {
-            return null;
-        }
+        if (responseBody is null) return null;
 
         return JObject.Parse(responseBody);
     }
@@ -61,8 +54,9 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
     private string? GetDistanceMatrixResponseBody()
     {
         var responseMessage = GetDistanceMatrixResponseMessage();
+        if (responseMessage is null) return null;
 
-        if (responseMessage == null || !responseMessage.IsSuccessStatusCode)
+        if (!responseMessage.IsSuccessStatusCode)
         {
             HandleRequestError(responseMessage?.ReasonPhrase);
             return null;
@@ -77,16 +71,11 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
     {
         HttpResponseMessage? response = default;
 
-        using (var client = new HttpClient())
+        using (var client = GetHttpClient)
         {
             try
             {
-                var requestUri = BuildUri();
-                var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-                request.Headers.Add("Accept", "application/json");
-                request.Headers.Add("User-Agent", "Mozilla/5.0");
-
-                response = client.SendAsync(request).Result;
+                response = SendRequest(client);
             }
             catch (HttpRequestException ex)
             {
@@ -96,6 +85,18 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
 
         return response;
     }
+
+    private HttpResponseMessage SendRequest(HttpClient client)
+    {
+        var requestUri = BuildUri();
+        var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+        request.Headers.Add("Accept", "application/json");
+        request.Headers.Add("User-Agent", "Mozilla/5.0");
+
+        return client.SendAsync(request).Result;
+    }
+
+    protected virtual HttpClient GetHttpClient => new();
 
     private void HandleRequestError(string? message)
     {
