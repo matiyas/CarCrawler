@@ -54,7 +54,7 @@ public class AdDetailsTests
     }
 
     [Fact]
-    public void AdDetails_WithNullProperties_PropertiesAreSetToDefaultValues()
+    public void AdDetails_WithoutSettingProperties__PropertiesHaveCorrectDefaultValues()
     {
         // Arrange
         var adDetails = new AdDetails();
