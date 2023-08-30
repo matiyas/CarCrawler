@@ -78,10 +78,7 @@ public class AdDetailsScraperService
     {
         var adMapDataNodeXPath = @"//input[contains(@id, ""adMapData"")]";
         var adMapDataNode = htmlDocNode.SelectSingleNode(adMapDataNodeXPath);
-        if (adMapDataNode == null)
-        {
-            return;
-        }
+        if (adMapDataNode is null) return;
 
         var longtitudeString = adMapDataNode.GetAttributeValue("data-map-lon", null);
         var latitudeString = adMapDataNode.GetAttributeValue("data-map-lat", null);
@@ -99,11 +96,7 @@ public class AdDetailsScraperService
     {
         var currencyNodeXPath = @".//span[contains(@class, ""offer-price__currency"")]";
         var currencyString = priceNode.SelectSingleNode(currencyNodeXPath)?.InnerText?.Trim();
-
-        if (currencyString == null)
-        {
-            return null;
-        }
+        if (currencyString is null) return null;
 
         return CurrencyCodesResolver.GetCurrenciesByCode(currencyString).FirstOrDefault()?.Code;
     }
@@ -138,10 +131,8 @@ public class AdDetailsScraperService
 
     private static bool TryParseDateOnly(string dateString, out DateOnly result)
     {
-        if (!DateOnly.TryParseExact(dateString, "dd/MM/yyyy", out var date))
-        {
-            return false;
-        }
+        if (!DateOnly.TryParseExact(dateString, "dd/MM/yyyy", out var date)) return false;
+
         result = date;
 
         return true;
@@ -183,10 +174,10 @@ public class AdDetailsScraperService
 
     private void GetDetailsFromParametersNodes(HtmlNodeCollection? paramsNodes)
     {
-        if (paramsNodes == null) { return; }
+        if (paramsNodes is null) return;
 
         var paramsDict = GetParametersDictFromParametersNodes(paramsNodes);
-        if (paramsDict is null) { return; }
+        if (paramsDict is null) return;
 
         _adDetails.Brand = GetValueFromParamsDict(paramsDict, "Marka pojazdu");
         _adDetails.Model = GetValueFromParamsDict(paramsDict, "Model pojazdu");
@@ -217,20 +208,14 @@ public class AdDetailsScraperService
 
     private void GetDetailsFromPriceNode(HtmlNode? priceNode)
     {
-        if (priceNode == null)
-        {
-            return;
-        }
+        if (priceNode is null) return;
 
         _adDetails.Price = GetAdPriceFromAdPriceNode(priceNode);
     }
 
     private void GetDetailsFromSummaryNode(HtmlNode summaryNode)
     {
-        if (summaryNode == null)
-        {
-            return;
-        }
+        if (summaryNode is null) return;
 
         _adDetails.Name = GetAdNameFromAdSummaryNode(summaryNode);
         _adDetails.ISOCurrencySymbol = GetAdISOCurrencySymbolFromAdSummaryNode(summaryNode);
@@ -246,7 +231,7 @@ public class AdDetailsScraperService
             return (Label: label, Value: value);
         });
 
-        parameters = parameters.Where(parameter => parameter.Label != null);
+        parameters = parameters.Where(parameter => parameter.Label is not null);
 
         return parameters.ToDictionary(tuple => tuple.Label!, tuple => tuple.Value);
     }
@@ -271,7 +256,7 @@ public class AdDetailsScraperService
         return idMatch.Groups["id"].ToString();
     }
 
-    private HtmlNode LoadHtmlDocNode()
+    protected virtual HtmlNode LoadHtmlDocNode()
     {
         var web = new HtmlWeb();
         var doc = web.Load(_adLink);
