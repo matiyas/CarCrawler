@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <None Remove="Configuration\google\maps\client_secrets.json" />
+    <None Remove="testdata\otomoto\offers-page-2.html" />
   </ItemGroup>
 
   <ItemGroup>

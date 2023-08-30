@@ -13,7 +13,7 @@ public class AdListLinksScraperService
     private HtmlNode? _htmlDocNode;
     private readonly IAppLogger? _logger;
 
-    private Uri AdListLinkWithPage
+    public Uri AdListLinkWithPage
     {
         get
         {
@@ -40,17 +40,6 @@ public class AdListLinksScraperService
         _logger = logger;
     }
 
-    public IEnumerable<Uri> GetLinksFromSinglePage()
-    {
-        var htmlNodes = GetHtmlNodes();
-        if (htmlNodes == null)
-        {
-            return Enumerable.Empty<Uri>();
-        }
-
-        return GetLinksFromHtmlNodes(htmlNodes);
-    }
-
     public IEnumerable<IEnumerable<Uri>> GetLinksFromPages()
     {
         do
@@ -64,9 +53,17 @@ public class AdListLinksScraperService
         } while (_currentPage > 0);
     }
 
+    private IEnumerable<Uri> GetLinksFromSinglePage()
+    {
+        var htmlNodes = GetHtmlNodes();
+        if (htmlNodes is null) return Enumerable.Empty<Uri>();
+
+        return GetLinksFromHtmlNodes(htmlNodes);
+    }
+
     private IEnumerable<HtmlNode> GetHtmlNodes()
     {
-        var adXPath = @"//article//a";
+        var adXPath = @"//article//h1/a";
 
         return _htmlDocNode!.SelectNodes(adXPath);
     }
@@ -101,7 +98,7 @@ public class AdListLinksScraperService
         return uri;
     }
 
-    private HtmlNode GetHtmlDocNodeForCurrentPage()
+    protected virtual HtmlNode GetHtmlDocNodeForCurrentPage()
     {
         var webDriver = new SeleniumWebBrowserDriver("chrome");
         var webPageDownloader = new WebBrowserPageDownloaderService(webDriver);
