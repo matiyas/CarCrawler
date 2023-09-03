@@ -11,7 +11,7 @@ namespace AdDetailsFetcherTests.Services;
 public class AdDetailsScraperServiceTests
 {
     [Fact]
-    public void Call_Success_ReturnsAdDetails()
+    public async Task Call_Success_ReturnsAdDetails()
     {
         // Arrange
         var url = new Uri("https://otomoto.pl/osobowe/oferta/foo-bar-baz-ID6FBfqN.html");
@@ -24,7 +24,7 @@ public class AdDetailsScraperServiceTests
             .Returns(htmlDocument.DocumentNode);
 
         // Act
-        var result = scraperMock.Object.Call();
+        var result = await scraperMock.Object.Call();
 
         // Assert
         Assert.IsType<AdDetails>(result);

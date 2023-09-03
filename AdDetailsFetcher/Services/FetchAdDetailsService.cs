@@ -18,7 +18,7 @@ public class FetchAdDetailsService
         _logger = logger;
     }
 
-    public IEnumerable<AdDetails> Fetch()
+    public async IAsyncEnumerable<AdDetails> Fetch()
     {
         var adListLinksScraperService = new AdListLinksScraperService(_srcUri);
 
@@ -30,7 +30,7 @@ public class FetchAdDetailsService
             {
                 _logger?.Log($"Processing link {i + 1}/{pageLinksArray.Length}...");
 
-                var newAdDetails = new AdDetailsScraperService(pageLinksArray[i]).Call();
+                var newAdDetails = await new AdDetailsScraperService(pageLinksArray[i]).Call();
                 if (newAdDetails == null) continue;
 
                 yield return newAdDetails!;

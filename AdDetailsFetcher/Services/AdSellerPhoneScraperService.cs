@@ -8,16 +8,34 @@ public class AdSellerPhoneScraperService
 {
     private readonly AdDetails _adDetails;
     private readonly IAppLogger? _logger;
+    private readonly HttpClient _httpClient;
 
-    public AdSellerPhoneScraperService(AdDetails adDetails) => _adDetails = adDetails;
-
-    public AdSellerPhoneScraperService(AdDetails adDetails, IAppLogger logger) : this(adDetails) => _logger = logger;
-
-    public void GetSellerPhonesFromOfferId(string? offerId)
+    public AdSellerPhoneScraperService(AdDetails adDetails)
     {
-        if (offerId == null) return;
+        _adDetails = adDetails;
+        _httpClient = new HttpClient();
+    }
 
-        using var client = new HttpClient();
+    public AdSellerPhoneScraperService(AdDetails adDetails, IAppLogger logger) : this(adDetails)
+    {
+        _logger = logger;
+    }
+
+    public AdSellerPhoneScraperService(AdDetails adDetails, IAppLogger logger, HttpClient httpClient) : this(adDetails, logger)
+    {
+        _httpClient = httpClient;
+    }
+
+    public AdSellerPhoneScraperService(AdDetails adDetails, HttpClient httpClient) : this(adDetails)
+    {
+        _httpClient = httpClient;
+    }
+
+    public async Task GetSellerPhonesFromOfferId(string? offerId)
+    {
+        if (offerId is null) return;
+
+        using var client = _httpClient;
         try
         {
             var requestUri = @$"https://www.otomoto.pl/ajax/misc/contact/all_phones/{offerId}/"!;
@@ -25,14 +43,14 @@ public class AdSellerPhoneScraperService
             request.Headers.Add("Accept", "application/json");
             request.Headers.Add("User-Agent", "Mozilla/5.0");
 
-            var response = client.SendAsync(request).Result;
+            var response = await client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 HandleRequestError(response.ReasonPhrase);
                 return;
             }
 
-            var responseBody = response.Content.ReadAsStringAsync().Result;
+            var responseBody = await response.Content.ReadAsStringAsync();
             var jsonDocument = JsonDocument.Parse(responseBody);
             var data = jsonDocument.RootElement;
 

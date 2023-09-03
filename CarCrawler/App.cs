@@ -27,15 +27,15 @@ public class App : IDisposable
         _configuration = new AppConfiguration();
         _logger = new Configuration.AppLogger(_configuration);
         _db = new CarCrawlerDbContext(_logger);
-        _adDetails = null!;
+        _adDetails = new List<AdDetails>();
         _vehicleHistoryReports = new List<VehicleHistoryReport>();
     }
 
-    public void Run()
+    public async Task Run()
     {
         SetCultureInfo();
         PrintLogo();
-        FetchAdDetails();
+        await FetchAdDetails();
         SetDistanceFromSeller();
         SaveAdDetailsInDb();
         FetchVehiclesHistory();
@@ -60,10 +60,13 @@ public class App : IDisposable
         Console.WriteLine(logoString);
     }
 
-    private void FetchAdDetails()
+    private async Task FetchAdDetails()
     {
         var fetcher = new FetchAdDetailsService(_configuration.GetValue<Uri>("OffertUrl"), _logger);
-        _adDetails = fetcher.Fetch().Select(AddDetailsConverter.Convert);
+        await foreach (var result in fetcher.Fetch())
+        {
+            _adDetails = _adDetails.Append(AddDetailsConverter.Convert(result));
+        }
     }
 
     private void SetDistanceFromSeller()

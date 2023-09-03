@@ -5,10 +5,10 @@ namespace CarCrawler;
 
 public class Program
 {
-    private static void Main()
+    private static async Task Main()
     {
         var app = new App();
-        app.Run();
+        await app.Run();
 
         app.Dispose();
     }

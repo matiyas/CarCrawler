@@ -20,7 +20,7 @@ public class AdDetailsScraperService
         _adDetails = new AdDetails();
     }
 
-    public AdDetails? Call()
+    public async Task<AdDetails?> Call()
     {
         #region XPaths
 
@@ -52,17 +52,17 @@ public class AdDetailsScraperService
         GetDetailsFromDescriptionNode(descriptionNode);
         GetVinFromHtmlDocNode(htmlDocNode);
         GetSellerCoordinatesFromHtmlDocNode(htmlDocNode);
-        GetSellerPhonesFromOfferId(offerId);
+        await GetSellerPhonesFromOfferId(offerId);
 
         #endregion Assignments
 
         return _adDetails;
     }
 
-    private void GetSellerPhonesFromOfferId(string? offerId)
+    private async Task GetSellerPhonesFromOfferId(string? offerId)
     {
         var service = new AdSellerPhoneScraperService(_adDetails);
-        service.GetSellerPhonesFromOfferId(offerId);
+        await service.GetSellerPhonesFromOfferId(offerId);
     }
 
     private void GetIdFromHtmlDocNode(HtmlNode htmlDocNode)
