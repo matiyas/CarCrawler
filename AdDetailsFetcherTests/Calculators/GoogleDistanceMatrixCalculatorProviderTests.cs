@@ -31,20 +31,24 @@ public class GoogleDistanceMatrixCalculatorProviderTests
     }
 
     [Fact]
-    public void GetDistanceMatrix_HttpRequestExceptionWhileSendingRequest_ReturnsNull()
+    public async Task GetDistanceMatrix_HttpRequestExceptionWhileSendingRequest_ReturnsNull()
     {
+        // Arrange
         SetupHttpResponse(HttpStatusCode.InternalServerError);
 
-        var result = _providerMock.Object.GetDistanceMatrix();
+        // Act
+        var result = await _providerMock.Object.GetDistanceMatrix();
 
+        // Assert
         Assert.Null(result);
         _loggerMock.Verify(logger => logger.Log("An unexpected error occurred:"), Times.Once);
         _loggerMock.Verify(logger => logger.Log("Internal Server Error"), Times.Once);
     }
 
     [Fact]
-    public void GetDistanceMatrix_SuccessResponse_ReturnsDistanceMatrix()
+    public async Task GetDistanceMatrix_SuccessResponse_ReturnsDistanceMatrix()
     {
+        // Arrange
         var responseJson = File.ReadAllText("TestData/google/maps/success_response.json");
         var queryString =
             new Dictionary<string, string>
@@ -59,8 +63,10 @@ public class GoogleDistanceMatrixCalculatorProviderTests
         provider.Origin = new Point(48.858475952373254, 2.294449110426952);
         provider.Destination = new Point(48.855207936096825, 2.279740804223466);
 
-        var result = provider.GetDistanceMatrix();
+        // Act
+        var result = await provider.GetDistanceMatrix();
 
+        // Assert
         Assert.IsType<DistanceMatrix>(result);
         Assert.Equal(provider.Origin, result.Origin);
         Assert.Equal(provider.Destination, result.Destination);

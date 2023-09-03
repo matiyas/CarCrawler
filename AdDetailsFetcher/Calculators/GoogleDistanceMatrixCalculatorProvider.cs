@@ -23,9 +23,9 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
         _logger = logger;
     }
 
-    public DistanceMatrix? GetDistanceMatrix()
+    public async Task<DistanceMatrix?> GetDistanceMatrix()
     {
-        var json = GetDistanceMatrixResponseJson();
+        var json = await GetDistanceMatrixResponseJson();
         if (json is null) return null;
 
         var distanceMeters = json.SelectToken("rows[0].elements[0].distance.value")?.Value<int>();
@@ -43,17 +43,17 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
         return distanceMatrix;
     }
 
-    private JObject? GetDistanceMatrixResponseJson()
+    private async Task<JObject?> GetDistanceMatrixResponseJson()
     {
-        var responseBody = GetDistanceMatrixResponseBody();
+        var responseBody = await GetDistanceMatrixResponseBody();
         if (responseBody is null) return null;
 
         return JObject.Parse(responseBody);
     }
 
-    private string? GetDistanceMatrixResponseBody()
+    private async Task<string?> GetDistanceMatrixResponseBody()
     {
-        var responseMessage = GetDistanceMatrixResponseMessage();
+        var responseMessage = await GetDistanceMatrixResponseMessage();
         if (responseMessage is null) return null;
 
         if (!responseMessage.IsSuccessStatusCode)
@@ -62,12 +62,12 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
             return null;
         }
 
-        var responseBody = responseMessage.Content.ReadAsStringAsync().Result;
+        var responseBody = await responseMessage.Content.ReadAsStringAsync();
 
         return responseBody;
     }
 
-    private HttpResponseMessage? GetDistanceMatrixResponseMessage()
+    private async Task<HttpResponseMessage?> GetDistanceMatrixResponseMessage()
     {
         HttpResponseMessage? response = default;
 
@@ -75,7 +75,7 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
         {
             try
             {
-                response = SendRequest(client);
+                response = await SendRequest(client);
             }
             catch (HttpRequestException ex)
             {
@@ -86,14 +86,14 @@ public class GoogleDistanceMatrixCalculatorProvider : IDistanceMatrixCalculatorP
         return response;
     }
 
-    private HttpResponseMessage SendRequest(HttpClient client)
+    private async Task<HttpResponseMessage> SendRequest(HttpClient client)
     {
         var requestUri = BuildUri();
         var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
         request.Headers.Add("Accept", "application/json");
         request.Headers.Add("User-Agent", "Mozilla/5.0");
 
-        return client.SendAsync(request).Result;
+        return await client.SendAsync(request);
     }
 
     protected virtual HttpClient GetHttpClient => new();

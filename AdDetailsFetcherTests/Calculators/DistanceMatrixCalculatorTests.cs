@@ -9,41 +9,47 @@ public class DistanceMatrixCalculatorTests
 {
     private readonly DistanceMatrix _distanceMatrix = Mock.Of<DistanceMatrix>();
 
-    private IDistanceMatrixCalculatorProvider DistanceMatrixCalculatorProviderMock =>
-            Mock.Of<IDistanceMatrixCalculatorProvider>(provider => provider.GetDistanceMatrix() == _distanceMatrix);
+    private IDistanceMatrixCalculatorProvider DistanceMatrixCalculatorProviderMock
+    {
+        get
+        {
+            return Mock.Of<IDistanceMatrixCalculatorProvider>(provider =>
+                provider.GetDistanceMatrix() == Task.FromResult(_distanceMatrix));
+        }
+    }
 
     private DistanceMatrixCalculator DistanceMatrixCalculator => new(DistanceMatrixCalculatorProviderMock);
 
     [Fact]
-    public void Calculate_OriginAndDestinationNotNull_ReturnsDistanceMatrix()
+    public async Task Calculate_OriginAndDestinationNotNull_ReturnsDistanceMatrix()
     {
         Point? origin = new(0, 0);
         Point? destination = new(0, 0);
 
-        var result = DistanceMatrixCalculator.Calculate(origin, destination);
+        var result = await DistanceMatrixCalculator.Calculate(origin, destination);
 
         Assert.NotNull(result);
         Assert.Equal(_distanceMatrix, result);
     }
 
     [Fact]
-    public void Calculate_OriginIsNullAndDestinationNotNull_ReturnsNull()
+    public async Task Calculate_OriginIsNullAndDestinationNotNull_ReturnsNull()
     {
         Point? origin = null;
         Point? destination = new(0, 0);
 
-        var result = DistanceMatrixCalculator.Calculate(origin, destination);
+        var result = await DistanceMatrixCalculator.Calculate(origin, destination);
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void Calculate_OriginIsNotNullAndDestinationIsNull_ReturnsNull()
+    public async Task Calculate_OriginIsNotNullAndDestinationIsNull_ReturnsNull()
     {
         Point? origin = new(0, 0);
         Point? destination = null;
 
-        var result = DistanceMatrixCalculator.Calculate(origin, destination);
+        var result = await DistanceMatrixCalculator.Calculate(origin, destination);
 
         Assert.Null(result);
     }

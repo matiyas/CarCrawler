@@ -8,5 +8,5 @@ public interface IDistanceMatrixCalculatorProvider
     Point Origin { get; set; }
     Point Destination { get; set; }
 
-    DistanceMatrix? GetDistanceMatrix();
+    Task<DistanceMatrix?> GetDistanceMatrix();
 }

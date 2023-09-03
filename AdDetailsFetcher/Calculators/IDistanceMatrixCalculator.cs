@@ -5,6 +5,6 @@ namespace AdDetailsFetcher.Calculators
 {
     public interface IDistanceMatrixCalculator
     {
-        DistanceMatrix? Calculate(Point origin, Point destination);
+        Task<DistanceMatrix?> Calculate(Point origin, Point destination);
     }
 }

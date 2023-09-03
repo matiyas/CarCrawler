@@ -36,7 +36,7 @@ public class App : IDisposable
         SetCultureInfo();
         PrintLogo();
         await FetchAdDetails();
-        SetDistanceFromSeller();
+        await SetDistanceFromSeller();
         SaveAdDetailsInDb();
         FetchVehiclesHistory();
         SaveVehiclesHistoryReportsInDb();
@@ -69,7 +69,7 @@ public class App : IDisposable
         }
     }
 
-    private void SetDistanceFromSeller()
+    private async Task SetDistanceFromSeller()
     {
         var matrixProvider = new GoogleDistanceMatrixCalculatorProvider(_logger);
         var distanceMatrixCalculator = new DistanceMatrixCalculator(matrixProvider);
@@ -80,7 +80,7 @@ public class App : IDisposable
         foreach (var adDetails in _adDetails)
         {
             var dstCoords = adDetails?.SellerCoordinates;
-            var distanceMatrix = distanceMatrixCalculator.Calculate(originCoords, dstCoords);
+            var distanceMatrix = await distanceMatrixCalculator.Calculate(originCoords, dstCoords);
 
             adDetails!.TravelDuration = distanceMatrix?.Duration;
             adDetails!.TravelDistance = distanceMatrix?.DistanceMeters;
