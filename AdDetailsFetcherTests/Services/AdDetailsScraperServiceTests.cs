@@ -17,7 +17,11 @@ public class AdDetailsScraperServiceTests
         var url = new Uri("https://otomoto.pl/osobowe/oferta/foo-bar-baz-ID6FBfqN.html");
         var htmlDocument = new HtmlDocument();
         htmlDocument.Load("TestData/otomoto/offer.html");
-        var scraperMock = new Mock<AdDetailsScraperService>(url);
+        var expectedPhones = new[] { "531664970" };
+        var phoneScraperFunc = (AdDetails adDetails, string? _offerId) => Task.Run(() => {
+            adDetails.SellerPhones = expectedPhones;
+        });
+        var scraperMock = new Mock<AdDetailsScraperService>(url, phoneScraperFunc);
         scraperMock
             .Protected()
             .Setup<HtmlNode>("LoadHtmlDocNode")
@@ -39,7 +43,7 @@ public class AdDetailsScraperServiceTests
         Assert.Equal(new DateOnly(2015, 3, 20), result.RegistrationDate);
         Assert.Equal("CTR6PR9", result.RegistrationNumber);
         Assert.Equal(new Point(53.18478012084961, 18.606000900268555), result.SellerCoordinates);
-        Assert.Equal(new[] { "531664970" }, result.SellerPhones!);
+        Assert.Equal(expectedPhones, result.SellerPhones!);
         Assert.Equal("https://otomoto.pl/osobowe/oferta/foo-bar-baz-ID6FBfqN.html", result.Url!.ToString());
         Assert.Equal("SHHFK2760EU011595", result.VIN);
         Assert.Equal("2014", result.Year);

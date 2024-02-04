@@ -11,6 +11,7 @@ public class AdDetailsScraperService
 {
     private readonly AdDetails _adDetails;
     private readonly Uri _adLink;
+    public Func<AdDetails, string?, Task> _phoneScraperFunc;
 
     private delegate bool ParserFunc<T>(string arg, out T? res);
 
@@ -18,6 +19,14 @@ public class AdDetailsScraperService
     {
         _adLink = adLink;
         _adDetails = new AdDetails();
+        _phoneScraperFunc = GetSellerPhonesFromOfferId;
+    }
+
+    public AdDetailsScraperService(Uri adLink, Func<AdDetails, string?, Task> phoneScraperFunc)
+    {
+        _adLink = adLink;
+        _adDetails = new AdDetails();
+        _phoneScraperFunc = phoneScraperFunc;
     }
 
     public async Task<AdDetails?> Call()
@@ -52,16 +61,16 @@ public class AdDetailsScraperService
         GetDetailsFromDescriptionNode(descriptionNode);
         GetVinFromHtmlDocNode(htmlDocNode);
         GetSellerCoordinatesFromHtmlDocNode(htmlDocNode);
-        await GetSellerPhonesFromOfferId(offerId);
+        await _phoneScraperFunc(_adDetails, offerId);
 
         #endregion Assignments
 
         return _adDetails;
     }
 
-    private async Task GetSellerPhonesFromOfferId(string? offerId)
+    private async Task GetSellerPhonesFromOfferId(AdDetails adDetails, string? offerId)
     {
-        var service = new AdSellerPhoneScraperService(_adDetails);
+        var service = new AdSellerPhoneScraperService(adDetails);
         await service.GetSellerPhonesFromOfferId(offerId);
     }
 

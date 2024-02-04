@@ -18,7 +18,7 @@ namespace CarCrawler.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.16");
 
-            modelBuilder.Entity("CarCrawler.Database.AdDetails", b =>
+            modelBuilder.Entity("CarCrawler.Models.AdDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace CarCrawler.Migrations
                     b.ToTable("AdDetails");
                 });
 
-            modelBuilder.Entity("CarCrawler.Database.VehicleHistoryReport", b =>
+            modelBuilder.Entity("CarCrawler.Models.VehicleHistoryReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,18 +121,18 @@ namespace CarCrawler.Migrations
                     b.ToTable("VehicleHistoryReports");
                 });
 
-            modelBuilder.Entity("CarCrawler.Database.VehicleHistoryReport", b =>
+            modelBuilder.Entity("CarCrawler.Models.VehicleHistoryReport", b =>
                 {
-                    b.HasOne("CarCrawler.Database.AdDetails", "AdDetails")
+                    b.HasOne("CarCrawler.Models.AdDetails", "AdDetails")
                         .WithOne("VehicleHistoryReport")
-                        .HasForeignKey("CarCrawler.Database.VehicleHistoryReport", "AdDetailsId")
+                        .HasForeignKey("CarCrawler.Models.VehicleHistoryReport", "AdDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AdDetails");
                 });
 
-            modelBuilder.Entity("CarCrawler.Database.AdDetails", b =>
+            modelBuilder.Entity("CarCrawler.Models.AdDetails", b =>
                 {
                     b.Navigation("VehicleHistoryReport");
                 });
